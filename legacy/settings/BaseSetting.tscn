@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://bh8x54mstorgq"]
+
+[ext_resource type="Script" path="res://core/settings/BaseSetting.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://diexsbnxcyjvx" path="res://core/settings/ResetSettingIcon.png" id="2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_38hm0"]
+font_size = 20
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_keabl"]
+
+[node name="Setting" type="PanelContainer"]
+script = ExtResource("1")
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 1
+label_settings = SubResource("LabelSettings_38hm0")
+vertical_alignment = 1
+
+[node name="ResetButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 1
+icon = ExtResource("2")
+flat = true
+expand_icon = true
+
+[node name="ValueGroup" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_keabl")
+
+[connection signal="pressed" from="ResetButton" to="." method="_on_reset_button_pressed"]

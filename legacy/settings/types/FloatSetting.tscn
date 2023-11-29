@@ -1,0 +1,82 @@
+[gd_scene load_steps=3 format=3 uid="uid://7xd62bijtq0w"]
+
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://core/settings/BaseSetting.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends BaseSetting
+var _value_box:LineEdit
+var _last_valid_value := 0.0
+
+var max_val:float
+var min_val:float
+var unit:String
+
+func update_visuals():
+	_value_box = $ValueGroup/ValueBox
+	var c_pos = _value_box.caret_column 
+	_value_box.text = str(setting_value) + unit
+	_value_box.caret_column = int(min(_value_box.text.length(), c_pos))
+
+
+func serialize_setting_value()->String:
+	return _value_box.text.trim_suffix(unit)
+
+
+func deserialize_setting_value(value:String):
+	_value_box.text = value + unit
+
+
+func value_is_valid(value)->bool:
+	return value is float
+
+
+func get_value()->float:
+	if _value_box.text.trim_suffix(unit).is_valid_float():
+		return float(_value_box.text.trim_suffix(unit))
+	else:
+		return _last_valid_value
+
+
+func _on_value_changed(new_text:String):
+	var trimmed = new_text.trim_suffix(unit)
+	if new_text.ends_with(\".\"+unit):
+		trimmed = trimmed.trim_suffix(\".\"+unit)
+		if trimmed.is_valid_float():
+			_last_valid_value = float(trimmed)
+		else:
+			var c_pos = _value_box.caret_column
+			_value_box.text = str(_last_valid_value) + unit
+			_value_box.caret_column = int(min(_value_box.text.length(), c_pos))
+	elif trimmed.is_valid_float(): 
+		var val:float
+		if float(trimmed)<min_val:
+			val = min_val
+		elif float(trimmed)>max_val:
+			val=max_val
+		else:
+			val = float(trimmed)
+		set_value(val)
+		_last_valid_value = val
+	elif new_text == unit:
+		_last_valid_value = 0
+	else:
+		var c_pos = _value_box.caret_column
+		_value_box.text = str(_last_valid_value) + unit
+		_value_box.caret_column = int(min(_value_box.text.length(), c_pos))
+
+
+func _on_value_box_focus_exited():
+	if _value_box.text == \"\":
+		set_value(0)
+"
+
+[node name="FloatSetting" instance=ExtResource("1")]
+script = SubResource("1")
+
+[node name="ValueBox" type="LineEdit" parent="ValueGroup" index="0"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[connection signal="focus_exited" from="ValueGroup/ValueBox" to="." method="_on_value_box_focus_exited"]
+[connection signal="text_changed" from="ValueGroup/ValueBox" to="." method="_on_value_changed"]

@@ -1,0 +1,30 @@
+{
+"var1": 2,
+"var10": Vector3(0, 0, 0),
+"var11": Vector3i(0, 0, 0),
+"var12": Vector4(0, 0, 0, 0),
+"var13": Vector4i(0, 0, 0, 0),
+"var14": Rect2(0, 0, 0, 0),
+"var15": Rect2i(0, 0, 0, 0),
+"var16": Plane(0, 0, 0, 0),
+"var17": Quaternion(0, 0, 0, 1),
+"var18": AABB(0, 0, 0, 0, 0, 0),
+"var19": Projection(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),
+"var2": true,
+"var21": AABB(0, 0, 0, 0, 0, 0),
+"var22": [1, 2, "f"],
+"var24": [1, Vector2(0, 0)],
+"var25": {
+"1": [1, Vector2(0, 0)],
+"foo": [1, 2, "f"],
+"nest": {
+"bar": Vector2i(0, 0)
+}
+},
+"var4": Color(0.8, 0.3, 1, 1),
+"var5": Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0),
+"var6": Transform2D(1, 0, 0, 1, 0, 0),
+"var7": Basis(-1, 0, 0, 0, 1, 0, 0, 0, 1),
+"var8": Vector2(0, 0),
+"var9": Vector2i(0, 0)
+}

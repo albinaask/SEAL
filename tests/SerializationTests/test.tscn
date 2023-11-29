@@ -1,0 +1,72 @@
+[gd_scene load_steps=2 format=3 uid="uid://dto086ax50x6l"]
+
+[sub_resource type="GDScript" id="GDScript_ptqgi"]
+script/source = "extends Node
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	var res = testResource.new()
+	var path = \"res://unit tests/SerializationTests/test.txt\"
+	res.var1 = 2
+	res.var2 = true
+	res.var7 = Basis.FLIP_X
+	
+	res.save_as_GSON(path, [\"var3\"])
+	res = testResource.new()
+	res.load_from_GSON(path)
+	print(\"done\")
+
+
+
+
+
+class testResource extends GSONResource:
+	
+	#should be stored
+	@export var var1 := 1
+	@export var var2:bool
+	
+	#is blacklisted
+	@export var var3 := \"1\"
+	
+	#should be stored
+	@export var var4 := Color(0.8, 0.3, 1)
+	@export var var5 := Transform3D()
+	@export var var6 := Transform2D()
+	@export var var7 := Basis()
+	@export var var8 := Vector2()
+	@export var var9 := Vector2i()
+	@export var var10 := Vector3()
+	@export var var11 := Vector3i()
+	@export var var12 := Vector4()
+	@export var var13 := Vector4i()
+	@export var var14 := Rect2()
+	@export var var15 := Rect2i()
+	@export var var16 := Plane()
+	@export var var17 := Quaternion()
+	@export var var18 := AABB()
+	@export var var19 := Projection()
+	@export var var20 := NodePath()
+	@export var var21 := AABB()
+	
+	@export var var22 := [1, 2, \"f\"]
+	@export var var23 := PackedVector2Array([Vector2(1,2), Vector2(3,4)])
+	@export var var24 := [var1, var8]
+	@export var var25 := {\"foo\":var22, var3:var24, \"nest\": {\"bar\":var9}}
+	
+	#should not be stored
+	@export var var26 := Callable()
+	@export var var27 := Resource.new()
+	@export var var28 : Dictionary
+	
+	
+	func _init():
+		var temp = var24.duplicate()
+		temp.append(var27)
+		var28 = {\"foo2\":temp}
+	
+"
+
+[node name="test" type="Node"]
+script = SubResource("GDScript_ptqgi")

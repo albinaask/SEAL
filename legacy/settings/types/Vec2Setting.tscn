@@ -1,0 +1,122 @@
+[gd_scene load_steps=3 format=3 uid="uid://ne65bxa7ia7"]
+
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://core/settings/BaseSetting.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends BaseSetting
+
+
+var _x_box:LineEdit
+var _y_box:LineEdit
+
+var _boxes : Array
+
+var _last_valid_value := Vector2()
+
+var max_val:Vector2
+var min_val:Vector2
+var unit:String
+
+func update_visuals():
+	_x_box = $ValueGroup/Vec/XBox
+	_y_box = $ValueGroup/Vec/YBox
+	_boxes = [_x_box, _y_box]
+	
+	for i in range(_boxes.size()):
+		var box = _boxes[i]
+		if box == get_viewport().gui_get_focus_owner():
+			var c_pos = box.caret_column
+			box.text = str(setting_value[i]) + unit
+			box.caret_column = min(box.text.length(), c_pos)
+		else:
+			box.text = str(setting_value[i]) + unit
+
+
+func serialize_setting_value()->String:
+	return \"Vector2(\" + _x_box.text.trim_suffix(unit) + \", \" + _y_box.text.trim_suffix(unit) + \")\"
+
+
+func deserialize_setting_value(value:String):
+	#comes as: Vector2(x, y)
+	var strs = value.trim_prefix(\"Vector2(\").trim_suffix(\")\").split(\", \")
+	_x_box.text = strs[0] + unit
+	_y_box.text = strs[1] + unit
+
+
+func value_is_valid(value)->bool:
+	return value is Vector2
+
+
+func get_value()->Vector2:
+	var x:String = _x_box.text.trim_suffix(unit)
+	var y:String = _y_box.text.trim_suffix(unit)
+	
+	if x.is_valid_float() && y.is_valid_float():
+		return Vector2(float(x), float(y))
+	else:
+		return _last_valid_value
+
+
+func _on_value_changed(new_text:String, index:int):
+	var trimmed = new_text.trim_suffix(unit)
+	var box = _boxes[index]
+	if new_text.ends_with(\".\"+unit):
+		trimmed = trimmed.trim_suffix(\".\"+unit)
+		if trimmed.is_valid_float():
+			_last_valid_value[index] = float(trimmed)
+		else:
+			var c_pos = box.caret_column
+			box.text = str(_last_valid_value) + unit
+			box.caret_column = min(box.text.length(), c_pos)
+	elif trimmed.is_valid_float(): 
+		var val = setting_value
+		if float(trimmed)<min_val[index]:
+			val[index] = min_val[index]
+		elif float(trimmed)>max_val[index]:
+			val[index] = max_val[index]
+		else:
+			val[index] = float(trimmed)
+		set_value(val)
+		_last_valid_value = val
+	elif new_text == unit:
+		_last_valid_value[index] = 0.0
+	else:
+		var c_pos = box.caret_column
+		box.text = str(_last_valid_value[index]) + unit
+		box.caret_column = min(box.text.length(), c_pos)
+
+
+func _on_value_box_focus_exited(index):
+	if _boxes[index].text == \"\":
+		var vec:Vector2 = setting_value
+		vec[index] = 0
+		set_value(vec)
+"
+
+[node name="Vec2Setting" instance=ExtResource("1")]
+script = SubResource("1")
+
+[node name="Vec" type="GridContainer" parent="ValueGroup" index="0"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+columns = 2
+
+[node name="XLabel" type="Label" parent="ValueGroup/Vec" index="0"]
+layout_mode = 2
+text = "X:"
+
+[node name="XBox" type="LineEdit" parent="ValueGroup/Vec" index="1"]
+layout_mode = 2
+
+[node name="YLabel" type="Label" parent="ValueGroup/Vec" index="2"]
+layout_mode = 2
+text = "Y:"
+
+[node name="YBox" type="LineEdit" parent="ValueGroup/Vec" index="3"]
+layout_mode = 2
+
+[connection signal="focus_exited" from="ValueGroup/Vec/XBox" to="." method="_on_value_box_focus_exited" binds= [0]]
+[connection signal="text_changed" from="ValueGroup/Vec/XBox" to="." method="_on_value_changed" binds= [0]]
+[connection signal="focus_exited" from="ValueGroup/Vec/YBox" to="." method="_on_value_box_focus_exited" binds= [1]]
+[connection signal="text_changed" from="ValueGroup/Vec/YBox" to="." method="_on_value_changed" binds= [1]]

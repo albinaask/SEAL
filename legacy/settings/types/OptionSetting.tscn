@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://4nmgfmetpi6d"]
+
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://core/settings/BaseSetting.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends BaseSetting
+var _option_button:OptionButton
+
+var valid_values:PackedStringArray : set = _set_valid_values
+
+func update_visuals():
+	_option_button = $ValueGroup/OptionButton
+	_option_button.text = setting_value
+	_option_button.select(valid_values.find(setting_value))
+
+func on_show():
+	_option_button = $ValueGroup/OptionButton
+	if _option_button.get_item_count()==0:
+		for value in valid_values:
+			_option_button.add_item(value)
+
+
+func serialize_setting_value()->String:
+	return _option_button.text
+
+
+func deserialize_setting_value(value:String):
+	_option_button.text = value
+
+
+func value_is_valid(value)->bool:
+	return value is String && (valid_values.size()==0 || valid_values.has(value))
+
+
+func get_value_internal()->String:
+	return _option_button.text
+
+func set_value_internal(value:String)->void:
+	_option_button.text = value
+
+func _on_value_changed(new_index):
+	set_value(_option_button.get_item_text(new_index))
+
+func _set_valid_values(vals):
+	assert(vals!=null&&vals.size()!=0,\"Valid values must not be null, nor be empty\")
+	assert(vals.has(setting_default_value)) #,\"valid_values must contain default value\")
+	valid_values = vals
+"
+
+[node name="OptionSetting" instance=ExtResource("1")]
+script = SubResource("1")
+
+[node name="OptionButton" type="OptionButton" parent="ValueGroup" index="0"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[connection signal="item_selected" from="ValueGroup/OptionButton" to="." method="_on_value_changed"]

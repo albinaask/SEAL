@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://hbgtns12ds5m"]
+
+[ext_resource type="PackedScene" uid="uid://exxkpdthkm4i" path="res://core/utils/OWLUIDialog.scn" id="1"]
+[ext_resource type="Script" path="res://core/settings/ModSettingsDialog.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://bmftyc5y0aned" path="res://core/settings/OWLSettingsPanel.tscn" id="3"]
+[ext_resource type="Script" path="res://core/settings/GlobalSettings.gd" id="4"]
+
+[node name="ModSettingsDialog" instance=ExtResource("1")]
+script = ExtResource("2")
+contence_group_path = NodePath("TabContainer")
+
+[node name="AcceptButton" type="Button" parent="ControlGroup" index="0"]
+layout_mode = 2
+text = "accept"
+
+[node name="TabContainer" type="TabContainer" parent="." index="2"]
+layout_mode = 2
+
+[node name="Global Settings" parent="TabContainer" index="1" instance=ExtResource("3")]
+layout_mode = 2
+script = ExtResource("4")
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="pressed" from="ControlGroup/AcceptButton" to="." method="_on_accept_button_pressed"]
+
+[editable path="TabContainer/Global Settings"]
