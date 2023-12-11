@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bh8x54mstorgq"]
 
-[ext_resource type="Script" path="res://core/settings/BaseSetting.gd" id="1"]
-[ext_resource type="Texture2D" uid="uid://diexsbnxcyjvx" path="res://core/settings/ResetSettingIcon.png" id="2"]
+[ext_resource type="Script" path="res://addons/SEAL/SettingTypes/BaseSetting.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://diexsbnxcyjvx" path="res://legacy/settings/ResetSettingIcon.png" id="2"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_38hm0"]
 font_size = 20

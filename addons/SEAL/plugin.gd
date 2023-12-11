@@ -3,7 +3,7 @@ extends EditorPlugin
 
 
 func _enter_tree():
-	add_autoload_singleton("SEAL", "res://addons/slam/seal.gd")
+	add_autoload_singleton("SEAL", "res://addons/SEAL/SEAL.gd")
 
 
 func _exit_tree():

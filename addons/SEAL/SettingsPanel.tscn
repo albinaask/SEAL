@@ -1,13 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://bmftyc5y0aned"]
+[gd_scene load_steps=2 format=3 uid="uid://b5tcm526bjl1e"]
 
-[ext_resource type="Script" path="res://legacy/settings/OWLSettingsPanel.gd" id="1"]
+[sub_resource type="GDScript" id="GDScript_vsp1w"]
+resource_name = "SettingsPanel"
+script/source = "extends VBoxContainer
+"
 
-[node name="OWLSettingsPanel" type="VBoxContainer"]
+[node name="SettingsPanel" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-size_flags_horizontal = 3
-script = ExtResource("1")
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+script = SubResource("GDScript_vsp1w")
 
 [node name="titleBar" type="HBoxContainer" parent="."]
 layout_mode = 2

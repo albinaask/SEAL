@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckte3ujuk4lhf"]
+
+[ext_resource type="PackedScene" uid="uid://b5tcm526bjl1e" path="res://addons/SEAL/SettingsPanel.tscn" id="1_bx0qr"]
+[ext_resource type="PackedScene" uid="uid://15t6ek02up4o" path="res://addons/SEAL/BaseDialog.tscn" id="1_vv2wx"]
+
+[node name="SettingsDialog" instance=ExtResource("1_vv2wx")]
+title = "Settings"
+
+[node name="SettingsPanel" parent="ContentOffset" index="0" instance=ExtResource("1_bx0qr")]
+layout_mode = 1

@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="SEAL"
-config/features=PackedStringArray("4.1", "Forward Plus")
+config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Log="*res://addons/logger/logger.gd"
+SEAL="*res://addons/SEAL/SEAL.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/logger/plugin.cfg")
+enabled=PackedStringArray("res://addons/SEAL/plugin.cfg", "res://addons/logger/plugin.cfg")

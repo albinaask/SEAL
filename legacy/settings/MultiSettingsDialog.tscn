@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://hbgtns12ds5m"]
 
-[ext_resource type="PackedScene" uid="uid://exxkpdthkm4i" path="res://core/utils/OWLUIDialog.scn" id="1"]
-[ext_resource type="Script" path="res://core/settings/ModSettingsDialog.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://bmftyc5y0aned" path="res://core/settings/OWLSettingsPanel.tscn" id="3"]
-[ext_resource type="Script" path="res://core/settings/GlobalSettings.gd" id="4"]
+[ext_resource type="PackedScene" uid="uid://exxkpdthkm4i" path="res://legacy/OWLUIDialog.scn" id="1"]
+[ext_resource type="Script" path="res://legacy/settings/MultiSettingsDialog.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://bmftyc5y0aned" path="res://legacy/settings/OWLSettingsPanel.tscn" id="3"]
+[ext_resource type="Script" path="res://legacy/settings/GlobalSettings.gd" id="4"]
 
 [node name="ModSettingsDialog" instance=ExtResource("1")]
 script = ExtResource("2")

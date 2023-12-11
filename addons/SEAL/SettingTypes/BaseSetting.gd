@@ -49,7 +49,7 @@ func _on_show(settings_panel:OWLSettingsPanel):
 	var name_value_dict = settings_panel.API_object.get(settings_panel.settings_dict_property_name)
 	if !call("value_is_valid", name_value_dict[name]):
 			name_value_dict[name] = setting_default_value
-			GodotLogger.warn("Setting value of setting '" + name + "' is not allowed, resetting to default")
+			SEAL.logger.warn("Setting value of setting '" + name + "' is not allowed, resetting to default")
 	
 	if has_method("on_show"):
 		call("on_show")
@@ -112,7 +112,7 @@ func _on_reset_button_pressed():
 
 func set_value(value):
 	if !call("value_is_valid", value):
-		GodotLogger.err("Value illegal")
+		SEAL.logger.err("Value illegal")
 	else:
 		setting_value = value
 		if is_inside_tree():
@@ -128,9 +128,9 @@ func set_value(value):
 
 func set_default_value(value):
 	if setting_default_value != null:
-		GodotLogger.err("Default value is set more than once")
+		SEAL.logger.err("Default value is set more than once")
 	elif !call("value_is_valid", value):
-		GodotLogger.err("Default value type is illegal")
+		SEAL.logger.err("Default value type is illegal")
 	else:
 		setting_default_value = value
 		if setting_value==null:

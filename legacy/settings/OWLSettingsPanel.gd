@@ -26,9 +26,9 @@ var settings_dict_property_name:="settings"
 ##if the value is "", then this functionality is ignored 
 var visibility_control_method:=""
 
-@export var open_section_icon: Texture2D = preload("res://core/settings/OpenSectionIcon.png")
-@export var closed_section_icon: Texture2D = preload("res://core/settings/ClosedSectionIcon.png")
-@export var reset_icon: Texture2D = preload("res://core/settings/ResetSettingIcon.png")
+@export var open_section_icon: Texture2D = preload("res://legacy/settings/OpenSectionIcon.png")
+@export var closed_section_icon: Texture2D = preload("res://legacy/settings/ClosedSectionIcon.png")
+@export var reset_icon: Texture2D = preload("res://legacy/settings/ResetSettingIcon.png")
 
 ##how tall the settings are in the list (pixels)
 @export var setting_height: int = 40
@@ -101,7 +101,7 @@ func register_setting(setting:BaseSetting):
 			name_value_dict[setting.name] = setting.setting_default_value
 		elif !setting.value_is_valid(name_value_dict[setting.name]):
 			name_value_dict[setting.name] = setting.setting_default_value
-			GodotLogger.warn("Setting value of setting '" + setting.name + "' is not allowed, resetting to default")
+			Log.warn("Setting value of setting '" + setting.name + "' is not allowed, resetting to default")
 			API_object.call(save_method_name)
 			#TODO: reset file value to valid and mark change
 
@@ -206,41 +206,41 @@ func _on_setting_value_updated(updated:BaseSetting):
 
 func register_bool_setting(setting_name:String, group:String, default_value:=false, tooltip:=""):
 # warning-ignore:return_value_discarded
-	register_setting_inline("res://core/settings/types/BoolSetting.tscn", setting_name, group, default_value, tooltip)
+	register_setting_inline("res://legacy/settings/types/BoolSetting.tscn", setting_name, group, default_value, tooltip)
 
 func register_string_setting(setting_name:String, group:String, default_value:="", tooltip:=""):
 # warning-ignore:return_value_discarded
-	register_setting_inline("res://core/settings/types/StringSetting.tscn", setting_name, group, default_value, tooltip)
+	register_setting_inline("res://legacy/settings/types/StringSetting.tscn", setting_name, group, default_value, tooltip)
 	
 func register_option_setting(setting_name:String, group:String, valid_values:PackedStringArray, default_value:String, tooltip:=""):
-	var setting = register_setting_inline("res://core/settings/types/OptionSetting.tscn", setting_name, group, default_value, tooltip)
+	var setting = register_setting_inline("res://legacy/settings/types/OptionSetting.tscn", setting_name, group, default_value, tooltip)
 	setting.valid_values = valid_values
 
 func register_color_setting(setting_name:String, group:String, default_value:=Color.BLACK, tooltip:="", use_alpha:=false):
-	var setting = register_setting_inline("res://core/settings/types/ColorSetting.tscn", setting_name, group, default_value, tooltip)
+	var setting = register_setting_inline("res://legacy/settings/types/ColorSetting.tscn", setting_name, group, default_value, tooltip)
 	setting._use_alpha = use_alpha
 
 func register_int_setting(setting_name:String, group:String, default_value:=0, tooltip:="", unit:="", min_val:=-2147483647, max_val:=2147483647):
-	var setting = register_setting_inline("res://core/settings/types/IntSetting.tscn", setting_name, group, default_value, tooltip)
+	var setting = register_setting_inline("res://legacy/settings/types/IntSetting.tscn", setting_name, group, default_value, tooltip)
 	setting.min_val = min_val
 	setting.max_val = max_val
 	setting.unit=unit
 	
 func register_float_setting(setting_name:String, group:String, default_value:=0.0, tooltip:="", unit:="", min_val:=-INF, max_val:=INF):
-	var setting = register_setting_inline("res://core/settings/types/FloatSetting.tscn", setting_name, group, default_value, tooltip)
+	var setting = register_setting_inline("res://legacy/settings/types/FloatSetting.tscn", setting_name, group, default_value, tooltip)
 	setting.min_val = min_val
 	setting.max_val = max_val
 	setting.unit=unit
 
 
 func register_vec2_setting(setting_name:String, group:String, default_value:=Vector2(), tooltip:="", unit:="", min_val:=Vector2(-INF, -INF), max_val:=Vector2(INF, INF)):
-	var setting = register_setting_inline("res://core/settings/types/Vec2Setting.tscn", setting_name, group, default_value, tooltip)
+	var setting = register_setting_inline("res://legacy/settings/types/Vec2Setting.tscn", setting_name, group, default_value, tooltip)
 	setting.min_val = min_val
 	setting.max_val = max_val
 	setting.unit=unit
 	
 func register_vec3_setting(setting_name:String, group:String, default_value:=Vector3(), tooltip:="", unit:="", min_val:=Vector3(-INF, -INF, -INF), max_val:=Vector3(INF, INF, INF)):
-	var setting := register_setting_inline("res://core/settings/types/Vec3Setting.tscn", setting_name, group, default_value, tooltip)
+	var setting := register_setting_inline("res://legacy/settings/types/Vec3Setting.tscn", setting_name, group, default_value, tooltip)
 	setting.min_val = min_val
 	setting.max_val = max_val
 	setting.unit=unit
@@ -253,5 +253,5 @@ func register_key_setting(setting_name:String, group:String, key_scan_code:Key, 
 	val.ctrl_pressed = control_required
 	val.alt_pressed = alt_required
 # warning-ignore:return_value_discarded
-	register_setting_inline("res://core/settings/types/KeySetting.tscn", setting_name, group, val, tooltip)
+	register_setting_inline("res://legacy/settings/types/KeySetting.tscn", setting_name, group, val, tooltip)
 

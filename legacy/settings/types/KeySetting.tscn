@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://civq7vlw6wx7j"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://core/settings/BaseSetting.tscn" id="1"]
-[ext_resource type="Texture2D" uid="uid://c2wf8t0larlgj" path="res://core/settings/types/Alt.png" id="2"]
-[ext_resource type="Texture2D" uid="uid://bssdxurv3ubc5" path="res://core/settings/types/Shift.png" id="3"]
-[ext_resource type="Texture2D" uid="uid://bdbmjuepr1hp0" path="res://core/settings/types/Ctrl.png" id="4"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/SettingTypes/BaseSetting.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://c2wf8t0larlgj" path="res://legacy/settings/types/Alt.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://bssdxurv3ubc5" path="res://legacy/settings/types/Shift.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://bdbmjuepr1hp0" path="res://legacy/settings/types/Ctrl.png" id="4"]
 
 [sub_resource type="GDScript" id="1"]
 script/source = "extends BaseSetting
