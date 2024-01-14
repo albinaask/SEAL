@@ -1,7 +1,7 @@
 #this class is not to be added to the tree by itself, but instead inherited.
 extends PanelContainer
 
-class_name BaseSetting
+class_name SettingsPainter
 
 const MIN_SETTING_HEIGHT = 40
 const MARGIN = 0
@@ -16,6 +16,9 @@ var _reset_button : Button
 var setting_default_value : set = set_default_value
 var setting_value : set = set_value
 var _settings_panel:OWLSettingsPanel
+
+func _init():
+	get_property_list()
 
 func _ready():
 	_title_label = $TitleLabel
@@ -123,7 +126,8 @@ func set_value(value):
 				_reset_button.visible = setting_value != setting_default_value
 			call("update_visuals")
 		if _settings_panel:
-			_settings_panel._on_setting_value_updated(self)
+			pass
+			#_settings_panel._on_setting_value_updated(self)
 
 
 func set_default_value(value):

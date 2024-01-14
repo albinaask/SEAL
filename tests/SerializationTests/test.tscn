@@ -7,7 +7,7 @@ script/source = "extends Node
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var res = testResource.new()
-	var path = \"res://unit tests/SerializationTests/test.txt\"
+	var path = \"res://tests/SerializationTests/test.txt\"
 	res.var1 = 2
 	res.var2 = true
 	res.var7 = Basis.FLIP_X
