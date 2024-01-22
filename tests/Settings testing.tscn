@@ -8,22 +8,24 @@ script/source = "extends Node
 
 
 func _ready():
-	
 	var settings_collection = TestSettingCollection.new()
-	#SEAL.global_setting_singletons.append(settings_collection)
-	var settings_dialog = $SettingsDialog
+	SEAL.global_setting_singletons.append(settings_collection)
+	settings_collection.serialize(\"res://tests/test_setting_collection.GSON\")
+	#var settings_dialog = $SettingsDialog
 	#settings_dialog.settings_collection = settings_collection
-	settings_dialog.visible = true
+	#settings_dialog.visible = true
 
 
 
 
 
-##Holder for all the serialized data
+
 class TestSettingCollection extends SettingsCollection:
-	func _init():
-		
-		pass
+	
+	var test_setting_1 = BoolSetting.new(\"test_setting_1\", \"group 1\")
+	
+	func _init() -> void:
+		settings[\"test_setting_1\"] = test_setting_1
 "
 
 [node name="Node" type="Node"]

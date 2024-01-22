@@ -1,20 +1,17 @@
-#this class is not to be added to the tree by itself, but instead inherited.
 extends PanelContainer
 
 class_name SettingsPainter
+##this class is not to be added to the tree by itself, but instead inherited.
 
 const MIN_SETTING_HEIGHT = 40
 const MARGIN = 0
 const SCROLL_MARGIN = 10
 
-var setting_group : String
-
 var _title_label : Label
 var _value_group : Control
 var _reset_button : Button
 
-var setting_default_value : set = set_default_value
-var setting_value : set = set_value
+var setting:Setting
 var _settings_panel:OWLSettingsPanel
 
 func _init():
@@ -25,38 +22,27 @@ func _ready():
 	_value_group = $ValueGroup
 	_reset_button = $ResetButton
 
-#sub classes must contain following methods:
-#	value_is_valid(value)->bool
-#	get_value_internal()->any
-#	set_value_internal(val)->any
-#	serialize_setting_value()->String
-#	deserialize_setting_value(String)
-#	update_visuals()-void
+##Optional method for updating the setting's visuals 
+var update_visuals_method:Callable
 
-#sub classes may contain following method:
-#	on_show()-void
-#	equals(other)->bool
+##Optional method that is a callback for when this setting is made visible.
+var on_show:=func():pass
 
 func _notification(what):
 	if what == NOTIFICATION_SORT_CHILDREN:
 		_sort_children()
-		
 
-func _on_show(settings_panel:OWLSettingsPanel):
+func _on_show(setting:Setting, settings_panel:OWLSettingsPanel):
 	_title_label = $TitleLabel
 	_value_group = $ValueGroup
 	_reset_button = $ResetButton
-	_title_label.text = name
-	_reset_button.visible = setting_value != setting_default_value
+	self.setting = setting
+	_title_label.text = tr(setting.identifier) if can_translate_messages() else setting.identifier.replace("_", " ")
+	_reset_button.visible = setting.value != setting.default_value
 	_settings_panel = settings_panel
-	var name_value_dict = settings_panel.API_object.get(settings_panel.settings_dict_property_name)
-	if !call("value_is_valid", name_value_dict[name]):
-			name_value_dict[name] = setting_default_value
-			SEAL.logger.warn("Setting value of setting '" + name + "' is not allowed, resetting to default")
 	
-	if has_method("on_show"):
-		call("on_show")
-	call("update_visuals")
+	on_show.call()
+	update_visuals_method.call()
 
 
 func _sort_children():
@@ -109,33 +95,16 @@ func _sort_children():
 
 
 func _on_reset_button_pressed():
-	set_value(setting_default_value)
+	set_setting_value(setting.default_value)
 	_reset_button.visible = false
 
 
-func set_value(value):
-	if !call("value_is_valid", value):
+func set_setting_value(value):
+	#since we use the unsafe method we check that the setting is valid.
+	if setting.value_is_valid_method.call(value):
 		SEAL.logger.err("Value illegal")
-	else:
-		setting_value = value
-		if is_inside_tree():
-			_reset_button = $ResetButton
-			if has_method("equals"):
-				_reset_button.visible = !call("equals", setting_default_value)
-			else:
-				_reset_button.visible = setting_value != setting_default_value
-			call("update_visuals")
-		if _settings_panel:
-			pass
-			#_settings_panel._on_setting_value_updated(self)
-
-
-func set_default_value(value):
-	if setting_default_value != null:
-		SEAL.logger.err("Default value is set more than once")
-	elif !call("value_is_valid", value):
-		SEAL.logger.err("Default value type is illegal")
-	else:
-		setting_default_value = value
-		if setting_value==null:
-			set_value(setting_default_value)
+		return
+	
+	setting._force_set(value)#in case we are in a locked context
+	_reset_button.visible = !setting.equals_method.call(setting.default_value)
+	update_visuals_method.call()
