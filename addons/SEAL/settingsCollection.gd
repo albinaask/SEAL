@@ -1,14 +1,19 @@
 extends RefCounted
 
-
+## SettingCollections can either be defined in code, such as in res://tests/settings_testing.tscn or generated from a raw GSON.
+## The former is the standard and should always be used when you want to use the settings to control code.
+## The latter is used to change settings while this code isn't loaded, like in game launchers, outside mod environments etc.
+## This means that the settings are inferred from the GSON code, which may include typos, malware or whatever.
+## When using this mode, all the validation has to be done by you, while the former handles all of that for you. 
 class_name SettingsCollection
 
+##All the settings that are tied to this collection MUST be in this array, it's not enough to keep them as class members!
 @export
 var settings := {}:
 	set(val):
 		SEAL.logger.err("This variable is not meant to be set directly, but rather appended to with new settings.")
 
-
+##Stores all the settings in this collection into a dictionary that can be written to a file, shipped over the internet or whatever.
 func serialize(path):
 	var dict = Dictionary()
 	for setting:Setting in settings.values():
@@ -47,16 +52,11 @@ static func create_from_GSON(path)->SettingsCollection:
 	settings_collection.settings = settings
 	return settings_collection
 
-##This method is used when the settings have been validated
+##This method is used to populate a SettingsCollection with data when the settings have already been defined.
 func deserialize(path):
 	if !FileAccess.file_exists(path):
 		SEAL.logger.info("SEAL couldn't find file to serialize from, using default values.")
 	else:
 		var dict := GSONParser.load_from_GSON(path)
 		for setting:Setting in settings.values():
-			#Do shit...
-			var ret = setting.deserializer_method.call()
-			if ret is Dictionary:
-				dict[ret["identifier"]] = ret
-			else:
-				SEAL.logger.err("Method bound to Setting.serializer_method must return dictionary.")
+			setting.deserializer_method.call(dict[setting.identifier])

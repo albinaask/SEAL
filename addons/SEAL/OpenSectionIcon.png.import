@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7yc3b3whn0ao"
-path="res://.godot/imported/SearchIcon.png-1f7d0820c956082b585697c2346b3373.ctex"
+uid="uid://dr06uhafck2br"
+path="res://.godot/imported/OpenSectionIcon.png-be12360f6d74606ba30fba6696f094e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://legacy/settings/SearchIcon.png"
-dest_files=["res://.godot/imported/SearchIcon.png-1f7d0820c956082b585697c2346b3373.ctex"]
+source_file="res://addons/SEAL/OpenSectionIcon.png"
+dest_files=["res://.godot/imported/OpenSectionIcon.png-be12360f6d74606ba30fba6696f094e3.ctex"]
 
 [params]
 

@@ -28,14 +28,19 @@ var value:
 
 var setting_type:String
 
+##Read only, set from the internal constructor
+##Never serialized
 var _locked:
 	set(val):
-		SEAL.logger.err("_locked is read only.")
-##Read only
+		if _locked != null:
+			SEAL.logger.err("_locked is read only.")
+
+##Read only, set from the internal constructor
 ##Never serialized
 var default_value:
 	set(val):
-		SEAL.logger.err("default value can only be set from the constructor.")
+		if default_value != null:
+			SEAL.logger.err("default value can only be set from the constructor.")
 
 ##Must return a dict 
 var serializer_method:Callable

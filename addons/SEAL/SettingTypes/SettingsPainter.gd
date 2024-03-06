@@ -12,34 +12,26 @@ var _value_group : Control
 var _reset_button : Button
 
 var setting:Setting
-var _settings_panel:OWLSettingsPanel
 
-func _init():
-	get_property_list()
-
-func _ready():
-	_title_label = $TitleLabel
-	_value_group = $ValueGroup
-	_reset_button = $ResetButton
 
 ##Optional method for updating the setting's visuals 
-var update_visuals_method:Callable
+var update_visuals_method:=func():pass
 
 ##Optional method that is a callback for when this setting is made visible.
 var on_show:=func():pass
+
 
 func _notification(what):
 	if what == NOTIFICATION_SORT_CHILDREN:
 		_sort_children()
 
-func _on_show(setting:Setting, settings_panel:OWLSettingsPanel):
+func _on_show(setting:Setting):
 	_title_label = $TitleLabel
 	_value_group = $ValueGroup
 	_reset_button = $ResetButton
 	self.setting = setting
 	_title_label.text = tr(setting.identifier) if can_translate_messages() else setting.identifier.replace("_", " ")
 	_reset_button.visible = setting.value != setting.default_value
-	_settings_panel = settings_panel
 	
 	on_show.call()
 	update_visuals_method.call()

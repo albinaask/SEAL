@@ -1,9 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://b5tcm526bjl1e"]
+[gd_scene load_steps=2 format=3 uid="uid://bmftyc5y0aned"]
 
-[sub_resource type="GDScript" id="GDScript_vsp1w"]
-resource_name = "SettingsPanel"
-script/source = "extends VBoxContainer
-"
+[ext_resource type="Script" path="res://addons/SEAL/SettingsPanel.gd" id="1_4t6q3"]
 
 [node name="SettingsPanel" type="VBoxContainer"]
 anchors_preset = 15
@@ -12,7 +9,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
-script = SubResource("GDScript_vsp1w")
+script = ExtResource("1_4t6q3")
 
 [node name="titleBar" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -30,3 +27,6 @@ size_flags_vertical = 3
 show_behind_parent = true
 layout_mode = 2
 size_flags_horizontal = 3
+
+[connection signal="visibility_changed" from="." to="." method="on_made_visible"]
+[connection signal="text_changed" from="titleBar/SearchBox" to="." method="_on_search_changed"]

@@ -9,12 +9,11 @@ script/source = "extends Node
 
 func _ready():
 	var settings_collection = TestSettingCollection.new()
-	#TODO: How do the user conviniently set global singletons... 
-	#SEAL.global_setting_singletons.append(settings_collection)
+	SEAL.global_setting_singletons.append(settings_collection)
 	settings_collection.deserialize(\"res://tests/test_setting_collection.GSON\")
-	var settings_panel = $SettingsDialog/SettingsPanel
-	settings_panel.settings_collection = settings_collection
-	$SettingsDialog.popup_centered()
+	var settings_dialog = $SettingsDialog
+	settings_dialog.settings_collection = settings_collection
+	settings_dialog.visible = true
 
 
 

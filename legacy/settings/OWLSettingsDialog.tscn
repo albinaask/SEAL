@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://exxkpdthkm4i" path="res://legacy/OWLUIDialog.scn" id="1_4orrj"]
 [ext_resource type="Script" path="res://legacy/settings/OWLSettingsDialog.gd" id="2_dufmx"]
-[ext_resource type="PackedScene" uid="uid://bmftyc5y0aned" path="res://legacy/settings/OWLSettingsPanel.tscn" id="3_7r7hj"]
+[ext_resource type="PackedScene" uid="uid://b5tcm526bjl1e" path="res://addons/SEAL/SettingsPanel.tscn" id="3_7r7hj"]
 
 [node name="OWLSettingsDialog" instance=ExtResource("1_4orrj")]
 visible = false

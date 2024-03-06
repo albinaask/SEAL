@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://diexsbnxcyjvx"
-path="res://.godot/imported/ResetSettingIcon.png-b0c4679b289c0508859fcef3d13ce702.ctex"
+uid="uid://c2bxuoay11hle"
+path="res://.godot/imported/ClosedSectionIcon.png-936a140fa08af2f13db05ae9dd7f62f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://legacy/settings/ResetSettingIcon.png"
-dest_files=["res://.godot/imported/ResetSettingIcon.png-b0c4679b289c0508859fcef3d13ce702.ctex"]
+source_file="res://addons/SEAL/ClosedSectionIcon.png"
+dest_files=["res://.godot/imported/ClosedSectionIcon.png-936a140fa08af2f13db05ae9dd7f62f7.ctex"]
 
 [params]
 
