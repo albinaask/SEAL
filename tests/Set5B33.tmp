@@ -24,13 +24,11 @@ func _ready():
 class TestSettingCollection extends SettingsCollection:
 	
 	##theese are all just short hands, settings are internally all linked to the SettingsCollection.settings array.
-	var test_setting_1 = BoolSetting.new(\"test_setting_1\", \"group 1\", \"setting 1\")
+	var test_setting_1 = BoolSetting.new(\"test_setting_1\", \"group 1\")
 	
 	func _init() -> void:
 		#We add all our shorthand settings to the settings arryay of the collection
 		settings[\"test_setting_1\"] = test_setting_1
-		
-		settings[\"setting_2\"] = IntSetting.new(\"setting_2\", \"group 2\", \"my special int setting\")
 "
 
 [node name="Node" type="Node"]

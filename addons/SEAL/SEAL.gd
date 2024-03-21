@@ -11,3 +11,4 @@ var valid_setting_types := []:
 
 func _init():
 	valid_setting_types.append(BoolSetting.TYPE)
+	valid_setting_types.append(IntSetting.TYPE)

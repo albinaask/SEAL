@@ -27,6 +27,7 @@ var value:
 			return value
 
 var setting_type:String
+var tooltip:String
 
 ##Read only, set from the internal constructor
 ##Never serialized
@@ -34,6 +35,7 @@ var _locked:
 	set(val):
 		if _locked != null:
 			SEAL.logger.err("_locked is read only.")
+		_locked = val
 
 ##Read only, set from the internal constructor
 ##Never serialized
@@ -41,6 +43,7 @@ var default_value:
 	set(val):
 		if default_value != null:
 			SEAL.logger.err("default value can only be set from the constructor.")
+		default_value = val
 
 ##Must return a dict 
 var serializer_method:Callable
@@ -65,10 +68,10 @@ static var create_from_GSON_methods:={}
 ##Signal that is emitted whenever the setting is changed, either from code or visually.
 signal on_setting_changed
 
-##_identifier: Should be internationally readable since this is the identifier used in the GSON file.
+##identifier: Should be internationally readable since this is the identifier used in the GSON file.
 ##
 ##__locked: Internal method. When a setting is loaded from a GSON only, we set this to true to make sure the program can't read settings that has not been validated.
-func _init(identifier:String, _group:String, default_value, setting_type:String, _locked:=false):
+func _init(identifier:String, _group:String, tooltip:String, default_value, setting_type:String, _locked:=false):
 	SEAL.logger.err_cond_false(serializer_method.is_valid(), "Must have a serializer method.")
 	SEAL.logger.err_cond_false(deserializer_method.is_valid(), "Must have a deserializer method.")
 	SEAL.logger.err_cond_false(value_is_valid_method.is_valid(), "Must have a value_is_valid method.")
@@ -82,6 +85,7 @@ func _init(identifier:String, _group:String, default_value, setting_type:String,
 	self._group = _group
 	self.value = default_value
 	self.default_value = default_value
+	self.tooltip = tooltip
 	if !SEAL.valid_setting_types.has(setting_type):
 		SEAL.logger.fatal("Setting is not of a type that has been registered to SEAL. Make sure this is done before settings are initialized.")
 	else:
@@ -96,6 +100,7 @@ func serialize_base(dict:Dictionary):
 	dict["value"] = value if value_is_valid_method.call(value) else default_value
 	dict["setting_type"] = SEAL.valid_setting_types.has(setting_type) if setting_type != "" else "null"
 	dict["default_value"] = default_value
+	dict["tooltip"] = default_value
 
 ##Helper method for deserializing the core values of a setting, meant to be called from "deserializer_method" of inherited classes
 ##Note: This method cannot be called if the setting is in locked state.

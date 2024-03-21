@@ -30,6 +30,9 @@ func _on_show(setting:Setting):
 	_value_group = $ValueGroup
 	_reset_button = $ResetButton
 	self.setting = setting
+	if !setting.on_setting_changed.is_connected(_update_visual_value):
+		setting.on_setting_changed.connect(_update_visual_value)
+	
 	_title_label.text = tr(setting.identifier) if can_translate_messages() else setting.identifier.replace("_", " ")
 	_reset_button.visible = setting.value != setting.default_value
 	
@@ -87,16 +90,9 @@ func _sort_children():
 
 
 func _on_reset_button_pressed():
-	set_setting_value(setting.default_value)
-	_reset_button.visible = false
+	setting.value = setting.default_value
 
 
-func set_setting_value(value):
-	#since we use the unsafe method we check that the setting is valid.
-	if setting.value_is_valid_method.call(value):
-		SEAL.logger.err("Value illegal")
-		return
-	
-	setting._force_set(value)#in case we are in a locked context
-	_reset_button.visible = !setting.equals_method.call(setting.default_value)
+func _update_visual_value():
+	_reset_button.visible = !setting.values_are_equal_method.call(setting.default_value)
 	update_visuals_method.call()

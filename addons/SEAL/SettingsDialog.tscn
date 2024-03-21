@@ -5,6 +5,8 @@
 
 [node name="ConfirmationDialog" type="ConfirmationDialog"]
 title = "Settings"
+size = Vector2i(400, 400)
+exclusive = false
 theme = ExtResource("1_2a0me")
 ok_button_text = "Accept"
 dialog_close_on_escape = false
