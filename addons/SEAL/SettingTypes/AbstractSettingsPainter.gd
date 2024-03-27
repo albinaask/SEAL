@@ -1,6 +1,6 @@
 extends PanelContainer
 
-class_name SettingsPainter
+class_name AbstractSettingsPainter
 ##this class is not to be added to the tree by itself, but instead inherited.
 
 const MIN_SETTING_HEIGHT = 40
@@ -13,12 +13,13 @@ var _reset_button : Button
 
 var setting:Setting
 
+var _proxy_value
 
 ##Optional method for updating the setting's visuals 
 var update_visuals_method:=func():pass
 
 ##Optional method that is a callback for when this setting is made visible.
-var on_show:=func():pass
+var on_show_func:=func():pass
 
 
 func _notification(what):
@@ -33,10 +34,14 @@ func _on_show(setting:Setting):
 	if !setting.on_setting_changed.is_connected(_update_visual_value):
 		setting.on_setting_changed.connect(_update_visual_value)
 	
-	_title_label.text = tr(setting.identifier) if can_translate_messages() else setting.identifier.replace("_", " ")
-	_reset_button.visible = setting.value != setting.default_value
+	_proxy_value = setting.value
+	var translated = tr(setting.identifier)
+	_title_label.text = translated if setting.identifier != translated else setting.identifier.replace("_", " ")
+	_title_label.tooltip_text = setting.tooltip
+	_reset_button.tooltip_text = tr("reset")
+	_reset_button.visible = _proxy_value != setting.default_value
 	
-	on_show.call()
+	on_show_func.call()
 	update_visuals_method.call()
 
 
@@ -90,9 +95,9 @@ func _sort_children():
 
 
 func _on_reset_button_pressed():
-	setting.value = setting.default_value
+	_proxy_value = setting.default_value
 
 
 func _update_visual_value():
-	_reset_button.visible = !setting.values_are_equal_method.call(setting.default_value)
+	_reset_button.visible = !setting.values_are_equal_method.call(_proxy_value, setting.default_value)
 	update_visuals_method.call()

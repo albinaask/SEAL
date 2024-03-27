@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhk4qyf0kgrwe"]
+
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/SettingTypes/AbstractSettingsPainter.tscn" id="1_vemi5"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends AbstractSettingsPainter
+
+var _value_box:LineEdit
+
+func _init() -> void:
+	update_visuals_method = update_visuals
+
+func update_visuals():
+	_value_box = $ValueGroup/ValueBox
+	_value_box.text = str(setting.value) + setting.unit
+
+
+func _on_value_changed(new_text):
+	var trimmed = new_text.trim_suffix(setting.unit)
+	var c_pos = _value_box.caret_column
+	if trimmed.is_valid_float(): 
+		_proxy_value = clampf(float(trimmed), setting.min_value, setting.max_value)
+		_value_box.text = _proxy_value
+	elif !new_text.ends_with(setting.unit):
+		_value_box.text = _proxy_value
+	_value_box.caret_column = min(_value_box.text.length(), c_pos)
+
+func _on_value_box_focus_exited():
+	if !_value_box.text.is_valid_float():
+		_value_box.text = str(_proxy_value) + setting.unit
+"
+
+[node name="FloatSetting" instance=ExtResource("1_vemi5")]
+script = SubResource("1")
+
+[node name="ValueBox" type="LineEdit" parent="ValueGroup" index="0"]
+layout_mode = 2
+focus_mode = 1
+
+[connection signal="focus_exited" from="ValueGroup/ValueBox" to="." method="_on_value_box_focus_exited"]
+[connection signal="text_changed" from="ValueGroup/ValueBox" to="." method="_on_value_changed"]

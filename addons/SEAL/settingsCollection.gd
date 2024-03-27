@@ -13,6 +13,11 @@ var settings := {}:
 	set(val):
 		SEAL.logger.err("This variable is not meant to be set directly, but rather appended to with new settings.")
 
+
+##shorthand add to avoid having to type out the name twice
+func add_setting_to_dict(setting:Setting):
+	settings[setting.identifier] = setting
+
 ##Stores all the settings in this collection into a dictionary that can be written to a file, shipped over the internet or whatever.
 func serialize(path):
 	var dict = Dictionary()

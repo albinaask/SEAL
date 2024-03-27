@@ -1,14 +1,27 @@
-[gd_scene load_steps=3 format=3 uid="uid://ckte3ujuk4lhf"]
+[gd_scene load_steps=4 format=3 uid="uid://ckte3ujuk4lhf"]
 
 [ext_resource type="Theme" uid="uid://ch7cischb5kn8" path="res://addons/SEAL/BaseTheme.res" id="1_2a0me"]
 [ext_resource type="PackedScene" uid="uid://bmftyc5y0aned" path="res://addons/SEAL/SettingsPanel.tscn" id="1_bx0qr"]
 
-[node name="ConfirmationDialog" type="ConfirmationDialog"]
+[sub_resource type="GDScript" id="GDScript_fan2p"]
+script/source = "extends ConfirmationDialog
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	confirmed.connect(func():
+		pass
+		)
+	
+"
+
+[node name="SettingsDialog" type="ConfirmationDialog"]
 title = "Settings"
 size = Vector2i(400, 400)
 exclusive = false
 theme = ExtResource("1_2a0me")
 ok_button_text = "Accept"
 dialog_close_on_escape = false
+script = SubResource("GDScript_fan2p")
 
 [node name="SettingsPanel" parent="." instance=ExtResource("1_bx0qr")]

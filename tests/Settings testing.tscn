@@ -6,34 +6,67 @@
 script/source = "extends Node
 
 
+var path = \"res://tests/test_setting_collection.GSON\"
+var initial_collection := TestSettingCollection.new()
+@onready
+var settings_panel:SettingsPanel = $SettingsDialog/SettingsPanel
 
 func _ready():
-	var settings_collection = TestSettingCollection.new()
 	#TODO: How do the user conviniently set global singletons... 
-	#SEAL.global_setting_singletons.append(settings_collection)
-	settings_collection.deserialize(\"res://tests/test_setting_collection.GSON\")
-	var settings_panel = $SettingsDialog/SettingsPanel
-	settings_panel.settings_collection = settings_collection
+	#SEAL.global_setting_singletons.append(initial_collection)
+	initial_collection.deserialize(path)
+	settings_panel.settings_collection = initial_collection
 	$SettingsDialog.popup_centered()
 
 
+func _on_settings_dialog_confirmed() -> void:
+	if initial_collection:
+		initial_collection.serialize(path)
+		print(initial_collection.test_setting_1.value)
+		##clear to catch the error were we'd be showing old settings in the test, not neccecary at all!!
+		initial_collection.settings.clear()
+		initial_collection = null
+		##recreate it from generic data, settings should be locked.
+		var new_collection = SettingsCollection.create_from_GSON(path)
+		settings_panel.settings_collection = new_collection
+	else:
+		DirAccess.remove_absolute(path)
+		#should fail!
+		print(settings_panel.settings_collection.settings[\"setting_3\"].value)
+		
 
 
 
 
 class TestSettingCollection extends SettingsCollection:
 	
-	##theese are all just short hands, settings are internally all linked to the SettingsCollection.settings array.
+	##Setting here is just a short hand, settings are internally all linked to the SettingsCollection.
+	##settings dict and must be added to that, but this makes it more convinient to access outside.
 	var test_setting_1 = BoolSetting.new(\"test_setting_1\", \"group 1\", \"setting 1\")
 	
 	func _init() -> void:
-		#We add all our shorthand settings to the settings arryay of the collection
-		settings[\"test_setting_1\"] = test_setting_1
+		#We add all our shorthand settings to the settings dict of the collection.
+		#the add_setting method is just a shorthand so we don't need to type all the identifiers twice.
+		add_setting_to_dict(test_setting_1)
 		
-		settings[\"setting_2\"] = IntSetting.new(\"setting_2\", \"group 2\", \"my special int setting\")
+		settings[\"setting_3\"] = Vector2Setting.new(\"setting_3\", \"group 2\", \"A Vec2 setting\", Vector2(1,2), Vector2(0,0), Vector2(10,10), \"kg\")
+		add_setting_to_dict(IntSetting.new(\"setting_2\", \"group 2\", \"my special int setting\", 1, 0, 10, \"kg\"))
+		add_setting_to_dict(FloatSetting.new(\"setting_4\", \"float group\", \"my special float setting\"))
+		add_setting_to_dict(Vector2Setting.new(\"setting_5\", \"vector group\", \"my special vector2 setting\"))
+		settings[\"vector3_settin\"] = Vector3Setting.new(\"vector3_setting\", \"vector group\", \"a Vector3 setting\", Vector3(1,2,3), Vector3(-10, -10, -10), Vector3(10, 10, 10), \"m\")
+		settings[\"vector4_setting\"] = Vector4Setting.new(\"vector4_setting\", \"vector group\", \"a Vector4 setting\", Vector4(1,2,3,4), Vector4(-10, -10, -10,-10), Vector4(10, 10, 10, 10), \"m\")
+
+		settings[\"Vector2i_setting\"] = Vector2iSetting.new(\"Vector2i_setting\", \"vector2i group\", \"my special Vector2i setting\")
+		settings[\"Vector3i_setting\"] = Vector3iSetting.new(\"Vector3i_setting\", \"vector3i group\", \"my special Vector3i setting\")
+		settings[\"Vector4i_setting\"] = Vector4iSetting.new(\"Vector4i_setting\", \"vector4i group\", \"my special Vector4i setting\")
+
+
+
 "
 
 [node name="Node" type="Node"]
 script = SubResource("1")
 
 [node name="SettingsDialog" parent="." instance=ExtResource("1_pwm4h")]
+
+[connection signal="confirmed" from="SettingsDialog" to="." method="_on_settings_dialog_confirmed"]

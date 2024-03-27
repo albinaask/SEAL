@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://crjgkx0j4f6sd"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/SettingTypes/BaseSetting.tscn" id="1_jb8wr"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/SettingTypes/AbstractSettingsPainter.tscn" id="1_ro0x3"]
 
 [sub_resource type="GDScript" id="1"]
-script/source = "extends SettingsPainter
+script/source = "extends AbstractSettingsPainter
 
 var _check_box:CheckBox
 
@@ -19,7 +19,7 @@ func _on_value_changed():
 	setting.value = _check_box.button_pressed
 "
 
-[node name="BoolSetting" instance=ExtResource("1_jb8wr")]
+[node name="BoolSetting" instance=ExtResource("1_ro0x3")]
 script = SubResource("1")
 
 [node name="CheckBox" type="CheckBox" parent="ValueGroup" index="0"]

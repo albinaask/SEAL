@@ -59,8 +59,8 @@ var get_painter_method:Callable
 
 ##Checks whether another setting value is equal to the one that is the current value. 
 ##Note: Can be overridden if needed, but has a default solution that is generally working for basic types except color for which is_approx_equal() must be used.
-var values_are_equal_method := func(other_setting_value)->bool: 
-	return value==other_setting_value
+var values_are_equal_method := func(value1, value2)->bool: 
+	return value1==value2
 
 ##Dictionary of String:Callable where the string is the 'setting_type' and the Callables takes a dict with GSON info and returns valid, locked settings.
 static var create_from_GSON_methods:={}
@@ -93,14 +93,16 @@ func _init(identifier:String, _group:String, tooltip:String, default_value, sett
 	self._locked = _locked
 
 ##Helper method for serializing the core values of a setting, meant to be called from the "serializer_method" of inherited classes
-func serialize_base(dict:Dictionary):
+##Returns the same dictionary
+func serialize_base(dict:Dictionary)->Dictionary:
 	dict["identifier"] = identifier
 	dict["group"] = _group
 	#Should in theory always be valid...
 	dict["value"] = value if value_is_valid_method.call(value) else default_value
 	dict["setting_type"] = SEAL.valid_setting_types.has(setting_type) if setting_type != "" else "null"
 	dict["default_value"] = default_value
-	dict["tooltip"] = default_value
+	dict["tooltip"] = tooltip
+	return dict
 
 ##Helper method for deserializing the core values of a setting, meant to be called from "deserializer_method" of inherited classes
 ##Note: This method cannot be called if the setting is in locked state.

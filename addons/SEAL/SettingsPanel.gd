@@ -1,6 +1,6 @@
 extends VBoxContainer
 
-class_name OWLSettingsPanel
+class_name SettingsPanel
 
 
 @export var open_section_icon: Texture2D = preload("res://addons/SEAL/OpenSectionIcon.png")
@@ -16,6 +16,8 @@ var settings_collection:SettingsCollection
 var group_settings_dict := {}
 var group_button_dict := {}
 
+signal on_confirmed
+
 func _ready():
 	assert(get_tree().root.connect("size_changed",Callable(self,"_on_root_size_changed"))==OK)
 
@@ -28,7 +30,7 @@ func on_made_visible():
 			var group_name:String = setting._group
 			if !group_settings_dict.keys().has(group_name):
 				_add_group(group_name)
-			var settings_painter:SettingsPainter = setting.get_settings_painter_scene().instantiate()
+			var settings_painter:AbstractSettingsPainter = setting.get_settings_painter_scene().instantiate()
 			group_settings_dict[group_name].append(settings_painter)
 			_setting_container.add_child(settings_painter)
 			settings_painter._on_show(setting)
@@ -67,7 +69,7 @@ func _update_visuals():
 	for group_name in group_settings_dict:
 		var match_group_name = group_name.count(search_term)>0
 		var has_matching_setting = false
-		for setting:SettingsPainter in group_settings_dict[group_name]:
+		for setting:AbstractSettingsPainter in group_settings_dict[group_name]:
 			setting.visible = search_term == "" || match_group_name || setting.name.count(search_term)>0
 			has_matching_setting = true
 		group_button_dict[group_name].visible = match_group_name || search_term == ""
@@ -81,3 +83,9 @@ func _on_search_changed(_new_text):
 ##Internal method connected to the of the window. Makes sure that the settings fill the entire scroll panel.
 func _on_root_size_changed():
 	_setting_container.size.x = size.x
+
+
+func _confirm():
+	for painter:AbstractSettingsPainter in group_settings_dict.values():
+		painter.setting.value = painter._proxy_value
+		on_confirmed.emit()
