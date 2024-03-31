@@ -32,29 +32,18 @@ func serialize(path):
 ##Used for deserializing settings when there is no validation layer present. Prevents unsafe setting values from being used in the code.
 static func create_from_GSON(path)->SettingsCollection:
 	var dict := GSONParser.load_from_GSON(path)
-	var settings = {}
+	var settings_collection = SettingsCollection.new()
 	for key in dict.keys():
 		var raw_setting = dict[key]
 		if !raw_setting is Dictionary:
 			SEAL.logger.err("Serialized setting was not of type Dictionary. Skipping.")
 			continue
-		elif !raw_setting.has("identifier"):
-			SEAL.logger.err("Serialized setting didn't have key 'identifier', skipping.")
+		if !Setting._check_types_in_settings_dict(key, raw_setting):
 			continue
 		
 		var identifier:String = raw_setting["identifier"]
-		if !raw_setting.has("setting_type"):
-			SEAL.logger.err("Serialized setting with name '" + identifier + "' didn't have key 'setting_type', '")
-			continue
-		
 		var type:String = raw_setting["setting_type"]
-		if !SEAL.valid_setting_types.has(type):
-			SEAL.logger.err("Serialized setting with name '" + identifier + "' didn't match any valid setting types.")
-			continue
-		
-		settings[identifier] = Setting.create_from_GSON_methods[type].call(raw_setting)
-	var settings_collection = SettingsCollection.new()
-	settings_collection.settings = settings
+		settings_collection.add_setting_to_dict(Setting.create_from_GSON_methods[type].call(raw_setting))
 	return settings_collection
 
 ##This method is used to populate a SettingsCollection with data when the settings have already been defined.

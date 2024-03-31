@@ -27,9 +27,8 @@ func get_settings_painter_scene():
 	return load("res://addons/SEAL/SettingTypes/Vector3iSettingsPainter.tscn")
 
 func is_value_valid(val)->bool:
-	return (val is Vector3i && 
-		val.x <= max_value.x && val.x >= min_value.x &&
-		val.y <= max_value.y && val.y >= min_value.y)
+	return val is Vector3i && val == val.clamp(min_value, max_value)
+
 
 ####Serialization
 

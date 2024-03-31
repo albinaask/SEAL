@@ -73,7 +73,7 @@ static func _parse_value() -> Variant:
 	if char == "[" || char == "{":
 		identifier = char
 	else:
-		var allowed_special_chars = ["\"", "-", "."]
+		var allowed_special_chars = ["\"", "-", ".", "_", " "]
 		while (char>="A" && char<="Z") || (char>="a" && char<="z") || (char>="0" && char<="9") || allowed_special_chars.has(char):
 			identifier += char
 			_current_index += 1
@@ -108,8 +108,12 @@ static func _parse_value() -> Variant:
 					char = _gson_string[_current_index]
 				_current_index += 1 #move past )
 				return str_to_var(identifier + data_str + ")")
-			#basically check for first closing parentheses
-			
+			elif identifier == "inf":
+				return INF
+			elif identifier == "inf_neg":
+				return -INF
+			elif identifier == "nan":
+				return NAN
 			else:
 				Log.err("Invalid identifier: '" + identifier + "'")
 				return null

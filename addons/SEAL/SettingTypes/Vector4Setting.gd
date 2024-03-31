@@ -27,11 +27,7 @@ func get_settings_painter_scene():
 	return load("res://addons/SEAL/SettingTypes/Vector4SettingsPainter.tscn")
 
 func is_value_valid(val)->bool:
-	return (val is Vector4 && 
-		val.x <= max_value.x && val.x >= min_value.x &&
-		val.y <= max_value.y && val.y >= min_value.y &&
-		val.z <= max_value.z && val.z >= min_value.z &&
-		val.w <= max_value.w && val.w >= min_value.w)
+	return val is Vector4 && val == val.clamp(min_value, max_value)
 
 ####Serialization
 

@@ -99,7 +99,7 @@ func serialize_base(dict:Dictionary)->Dictionary:
 	dict["group"] = _group
 	#Should in theory always be valid...
 	dict["value"] = value if value_is_valid_method.call(value) else default_value
-	dict["setting_type"] = SEAL.valid_setting_types.has(setting_type) if setting_type != "" else "null"
+	dict["setting_type"] = setting_type if setting_type != "" && SEAL.valid_setting_types.has(setting_type) else "null"
 	dict["default_value"] = default_value
 	dict["tooltip"] = tooltip
 	return dict
@@ -108,24 +108,50 @@ func serialize_base(dict:Dictionary)->Dictionary:
 ##Note: This method cannot be called if the setting is in locked state.
 func deserialize_base(dict:Dictionary):
 	if _locked:#See addon instructions for reference
-		SEAL.err("This method can only be used when setting is validated")
+		SEAL.logger.err("This method can only be used when setting is validated")
 		return
-	if !dict.has("identifier") || dict["identifier"] != identifier: #We didn't get the correct dictionary.
-		SEAL.logger.warn("Serialized setting didn't have key 'identifier' or identifier didn't match, skipping.")
+	if !_check_types_in_settings_dict(identifier, dict):
+		SEAL.logger.info("Setting had type issues, skipping deserialization")
 		return
-	if !dict.has("group"):
-		SEAL.logger.warn("No group set in GSON")
-	if !dict.has("setting_type") ||dict["setting_type"] != setting_type: #Settings has been changed on disk by somebody or there is a bug, either way we warn.
-		SEAL.logger.warn("Serialized setting with name '" + identifier + "' didn't have key 'setting_type', or serialized value differed from predefined type. Using predefined value.")
-	if !dict.has("default_value") ||dict["default_value"] != default_value: #Settings has been changed on disk by somebody or there is a bug, either way we warn.
-		SEAL.logger.warn("Serialized setting with name '" + identifier + "' didn't have key 'default_value', or serialized value differed from the predefined value. Using predefined value.")
-	
+	if dict["identifier"] != identifier:
+		SEAL.logger.warn("serialized setting identifier didn't match the preset, skipping. Do the key for the dict match the identifier? Did we get the wrong setting dict?")
+		return
+	if dict["setting_type"] != setting_type: #Settings has been changed on disk by somebody or there is a bug, either way we warn.
+		SEAL.logger.warn("Serialized setting with identifier '" + identifier + "'has a setting type that differs from from the preset, Skipping.")
+		return
 	if !dict.has("value") ||dict["value"] != value_is_valid_method.call(dict["value"]): #Make sure we don't set the value to some corrupt or tampered value.
 		SEAL.logger.warn("Serialized setting with name '" + identifier + "' didn't have key 'value', or serialized value wasn't valid. Using predefined value.")
-	else:
-		value = dict["value"]
-		_group = dict["group"]
+		return
+	if dict["default_value"] != default_value: #Settings has been changed on disk by somebody or there is a bug, either way we warn.
+		SEAL.logger.warn("Serialized setting with name '" + identifier + "' has a default value that differs from the preset. Using predefined value.")
+		return
+	value = dict["value"]
 
+static func _check_types_in_settings_dict(setting_name:String, dict:Dictionary)->bool:
+	if !_parameter_is_valid(dict, "identifier", TYPE_STRING, setting_name):
+		return false
+	if !_parameter_is_valid(dict, "group", TYPE_STRING, setting_name):
+		return false
+	if !_parameter_is_valid(dict, "setting_type", TYPE_STRING, setting_name):
+		return false
+	if !dict.has("default_value"):
+		SEAL.logger.warn("Serialized setting with name '" + setting_name + "' didn't have key 'default_value'.")
+		return false
+	if !dict.has("value"):
+		SEAL.logger.warn("Serialized setting with name '" + setting_name + "' didn't have key 'value'.")
+		return false
+	
+	return true
+
+static func _parameter_is_valid(dict:Dictionary, param_name:String, value_type:Variant.Type, setting_name:String)->bool:
+	if !dict.has(param_name):
+		SEAL.logger.warn("Serialized setting with name '" + setting_name + "' didn't have key '" + param_name + "'")
+		return false
+	elif typeof(dict[param_name]) != value_type:
+		SEAL.logger.warn("Serialized setting with name '" + setting_name + "' has an invalid value type of the '" + param_name + "' parameter.")
+		return false
+	else:
+		return true
 
 ##Internal method for overriding the _locked state of the setting.[BR]
 ##Warning: Using this method can cause cause vunerabilities in your code since settings that aren't checked to be valid can alter your code flow in unexpected or malicious ways if you rely on them. Only use this if you know what you are doing and you implement your own fail safes.
