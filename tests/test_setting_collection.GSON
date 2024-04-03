@@ -82,7 +82,7 @@
 "identifier": "test_setting_1",
 "setting_type": "BoolSetting",
 "tooltip": "setting 1",
-"value": false
+"value": true
 },
 "vector3_setting": {
 "default_value": Vector3(1, 2, 3),

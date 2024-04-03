@@ -87,5 +87,5 @@ func _on_root_size_changed():
 
 func _confirm():
 	for painter:AbstractSettingsPainter in group_settings_dict.values():
-		painter.setting.value = painter._proxy_value
+		painter.setting._force_set_value(painter._proxy_value)
 		on_confirmed.emit()

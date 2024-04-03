@@ -119,8 +119,8 @@ func deserialize_base(dict:Dictionary):
 	if dict["setting_type"] != setting_type: #Settings has been changed on disk by somebody or there is a bug, either way we warn.
 		SEAL.logger.warn("Serialized setting with identifier '" + identifier + "'has a setting type that differs from from the preset, Skipping.")
 		return
-	if !dict.has("value") ||dict["value"] != value_is_valid_method.call(dict["value"]): #Make sure we don't set the value to some corrupt or tampered value.
-		SEAL.logger.warn("Serialized setting with name '" + identifier + "' didn't have key 'value', or serialized value wasn't valid. Using predefined value.")
+	if !value_is_valid_method.call(dict["value"]): #Make sure we don't set the value to some corrupt or tampered value.
+		SEAL.logger.warn("Serialized setting with name '" + identifier + "' has a value that isn't valid. Using predefined value.")
 		return
 	if dict["default_value"] != default_value: #Settings has been changed on disk by somebody or there is a bug, either way we warn.
 		SEAL.logger.warn("Serialized setting with name '" + identifier + "' has a default value that differs from the preset. Using predefined value.")
@@ -155,10 +155,10 @@ static func _parameter_is_valid(dict:Dictionary, param_name:String, value_type:V
 
 ##Internal method for overriding the _locked state of the setting.[BR]
 ##Warning: Using this method can cause cause vunerabilities in your code since settings that aren't checked to be valid can alter your code flow in unexpected or malicious ways if you rely on them. Only use this if you know what you are doing and you implement your own fail safes.
-func _froce_get():
-	return value
+func _force_get_value():
+	return self.value
 
 ##Internal method for overriding the _locked state of the setting.[BR]
 ##Warning: Using this method can cause cause vunerabilities in your code since settings that aren't checked to be valid can alter your code flow in unexpected or malicious ways if you rely on them. Only use this if you know what you are doing and you implement your own fail safes.
-func _force_set(val):
-	value = val
+func _force_set_value(val):
+	self.value = val

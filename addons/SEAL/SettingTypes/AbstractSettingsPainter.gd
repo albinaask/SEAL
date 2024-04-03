@@ -13,7 +13,11 @@ var _reset_button : Button
 
 var setting:Setting
 
-var _proxy_value
+var _proxy_value:
+	set(val):
+		SEAL.logger.err_cond_false(setting.value_is_valid_method.call(val), "proxy values must be valid setting values.")
+		_proxy_value = val
+		_update_visual_value()
 
 ##Optional method for updating the setting's visuals 
 var update_visuals_method:=func():pass
@@ -34,7 +38,7 @@ func _on_show(setting:Setting):
 	if !setting.on_setting_changed.is_connected(_update_visual_value):
 		setting.on_setting_changed.connect(_update_visual_value)
 	
-	_proxy_value = setting.value
+	_proxy_value = setting._force_get_value()
 	var translated = tr(setting.identifier)
 	_title_label.text = translated if setting.identifier != translated else setting.identifier.replace("_", " ")
 	_title_label.tooltip_text = setting.tooltip

@@ -12,11 +12,11 @@ func _init() -> void:
 
 func update_visuals():
 	_check_box = $ValueGroup/CheckBox
-	_check_box.button_pressed = setting.value
+	_check_box.button_pressed = _proxy_value
 
 
 func _on_value_changed():
-	setting.value = _check_box.button_pressed
+	_proxy_value = _check_box.button_pressed
 "
 
 [node name="BoolSetting" instance=ExtResource("1_ro0x3")]
