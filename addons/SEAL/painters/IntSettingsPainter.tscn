@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bhk4qyf0kgrwe"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/SettingTypes/AbstractSettingsPainter.tscn" id="1_vemi5"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_vemi5"]
 
 [sub_resource type="GDScript" id="1"]
 script/source = "extends AbstractSettingsPainter
@@ -12,7 +12,7 @@ func _init() -> void:
 
 func update_visuals():
 	_value_box = $ValueGroup/ValueBox
-	_value_box.text = str(setting.value) + setting.unit
+	_value_box.text = str(_proxy_value) + setting.unit
 
 
 func _on_value_changed(new_text):
@@ -26,11 +26,11 @@ func _on_value_changed(new_text):
 	_value_box.caret_column = min(_value_box.text.length(), c_pos)
 
 func _on_value_box_focus_exited():
-	if !_value_box.text.is_valid_float():
-		_value_box.text = _proxy_value + setting.unit
+	if !_value_box.text.is_valid_int():
+		_value_box.text = str(_proxy_value) + setting.unit
 "
 
-[node name="intSetting" instance=ExtResource("1_vemi5")]
+[node name="IntSetting" instance=ExtResource("1_vemi5")]
 script = SubResource("1")
 
 [node name="ValueBox" type="LineEdit" parent="ValueGroup" index="0"]

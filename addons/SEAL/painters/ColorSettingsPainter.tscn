@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://dqk151uy8jt1s"]
+
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_ypb38"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends AbstractSettingsPainter
+
+@onready var _picker = $ValueGroup/Picker
+
+func _init() -> void:
+	update_visuals_method = update_visuals
+
+func update_visuals():
+	_picker.color = _proxy_value
+	_picker.edit_alpha = setting.use_alpha
+
+func _on_value_changed(color:Color):
+	_proxy_value = color
+
+
+func _on_picker_pressed():
+	update_visuals()
+"
+
+[node name="ColorSetting" instance=ExtResource("1_ypb38")]
+script = SubResource("1")
+
+[node name="Picker" type="ColorPickerButton" parent="ValueGroup" index="0"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[connection signal="color_changed" from="ValueGroup/Picker" to="." method="_on_value_changed"]
+[connection signal="pressed" from="ValueGroup/Picker" to="." method="_on_picker_pressed"]

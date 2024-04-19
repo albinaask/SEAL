@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bh8x54mstorgq"]
 
-[ext_resource type="Script" path="res://addons/SEAL/SettingTypes/AbstractSettingsPainter.gd" id="1_70hrd"]
-[ext_resource type="Texture2D" uid="uid://diexsbnxcyjvx" path="res://addons/SEAL/ResetSettingIcon.png" id="2"]
+[ext_resource type="Script" path="res://addons/SEAL/painters/AbstractSettingsPainter.gd" id="1_70hrd"]
+[ext_resource type="Texture2D" uid="uid://diexsbnxcyjvx" path="res://addons/SEAL/visualizers/ResetSettingIcon.png" id="2"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_38hm0"]
 font_size = 20
@@ -15,6 +15,7 @@ script = ExtResource("1_70hrd")
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 1
+mouse_filter = 1
 label_settings = SubResource("LabelSettings_38hm0")
 vertical_alignment = 1
 
@@ -22,6 +23,7 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 4
 focus_mode = 1
+mouse_filter = 1
 icon = ExtResource("2")
 flat = true
 expand_icon = true

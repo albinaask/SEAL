@@ -1,36 +1,35 @@
 extends RefCounted
 
-class_name Setting
-## Base class for settings, note that this class is ONLY meant to be inherited from. Using this class as it is is undefined.
+##Base class for settings, note that this class is ONLY meant to be inherited from. Using this class as it is, is undefined.
+##Has common functions and variables that is used for all setting types.
+##Also stores some info that is used during the visualisation process, but that needs to be serialized for use when the setting definitions are not available.
 
-##the name that the setting goes by in code and in GSON. 
-##Note: this is the identifier for the setting name in the translation table if translating is enbled for the project.
+##For an example on how to set up a basic setting, see IntSetting
+##For an example on how to set up a more complex setting with a non primitive type, see KeySetting
+class_name Setting
+
+##The name that the setting goes by in code and in GSON. 
+##Note: this is the identifier for the setting name in the translation table if translating is enbled for the project.[br] 
+##The translated name will then be visible in the settings interface.
 var identifier:String
 
 ##Which visual setting group this setting should be grouped by when it is visualized for the end user.
 ##Note: this is the identifier for the setting group in the translation table if translating is enbled for the project.
 var _group:String
 
-var value:
-	set(val):
-		if !value_is_valid_method.call(val):
-			SEAL.logger.err("Value is not valid, unable to set.")
-		elif _locked:
-			SEAL.logger.err("Setting is locked. It shouldn't be used.")
-		else:
-			value = val
-			on_setting_changed.emit()
-	get:
-		if _locked:
-			SEAL.logger.err("Setting is locked, using this value is unsafe and is only used internally.")
-		else:
-			return value
+##Internal variable that is unsafe. You should probably use set_value() and get_value() methods instead.
+##Do not use unless you know what you are doing and using proper protection.
+var _value
 
+##Settings have a type that must be unique. See any of the built in settings for examples.
+##Note: New settings must be registred during the startup sequence before any deserialization is done.
 var setting_type:String
+
+##The visual tooltip that should be shown in the settings dialog.
 var tooltip:String
 
-##Read only, set from the internal constructor
-##Never serialized
+##Mostly internal value that is read only, set from the internal constructor.
+##Should never be serialized and doing so causes bugs.
 var _locked:
 	set(val):
 		if _locked != null:
@@ -45,45 +44,37 @@ var default_value:
 			SEAL.logger.err("default value can only be set from the constructor.")
 		default_value = val
 
-##Must return a dict 
-var serializer_method:Callable
 
-##Must take a dict as only parameter
-var deserializer_method:Callable
-
-##Must take any value and return a bool
-var value_is_valid_method:Callable
-
-##Must return a PackedScene with the root node is of type SettingsPainter
-var get_painter_method:Callable
-
-##Checks whether another setting value is equal to the one that is the current value. 
-##Note: Can be overridden if needed, but has a default solution that is generally working for basic types except color for which is_approx_equal() must be used.
+##Checks whether two values is equal to eachother in the context of this setting, mostly used for the color setting(WIP) since the equals operator on godot colors are fiddely. 
+##Note: Can be overridden if needed, but has a default implementation that is generally working for mosttypes.
 var values_are_equal_method := func(value1, value2)->bool: 
 	return value1==value2
 
-##Dictionary of String:Callable where the string is the 'setting_type' and the Callables takes a dict with GSON info and returns valid, locked settings.
-static var create_from_GSON_methods:={}
+##Dictionary of String:Callable where the string is the 'setting_type' and the Callables takes a dict with GSON info and returns a valid, locked setting.
+static var create_locked_collection_from_GSON_methods:={}
 
 ##Signal that is emitted whenever the setting is changed, either from code or visually.
 signal on_setting_changed
 
-##identifier: Should be internationally readable since this is the identifier used in the GSON file.
-##
-##__locked: Internal method. When a setting is loaded from a GSON only, we set this to true to make sure the program can't read settings that has not been validated.
-func _init(identifier:String, _group:String, tooltip:String, default_value, setting_type:String, _locked:=false):
-	SEAL.logger.err_cond_false(serializer_method.is_valid(), "Must have a serializer method.")
-	SEAL.logger.err_cond_false(deserializer_method.is_valid(), "Must have a deserializer method.")
-	SEAL.logger.err_cond_false(value_is_valid_method.is_valid(), "Must have a value_is_valid method.")
+##identifier: Should be internationally readable, UTF-8-coded and not using spaces since this is the identifier used in the GSON file. (See Setting.identidfier for more info)
+##group: The visual group that this settings should be visualised alongside with in the settings dialog. E.g "Sounds", "Graphics", etc.
+##tooltip: The visual tooltip that should be shown in the settings dialog.
+##default_value: The default value that the setting should revert to visually and has initially when the setting is first created, setting value is set to this before any is loaded from a GSON file or the like, and if no value is serialized into this setting, it has this value until somebody changes it, either in code or visually.
+##setting_type: The type of setting that should be used. See any of the built in settings for examples. Usually hidden by a sub class.
+##__locked: Internal parameter for locking the setting. When a setting is loaded from a GSON only, we set this to true to make sure the program can't read settings that has not been validated. Usually nobydy should need to touch this ;)
+func _init(identifier:String, group:String, tooltip:String, default_value, setting_type:String, _locked:=false):
+	SEAL.logger.err_cond_false(get_method_list().any(func(dict:Dictionary):return dict["name"] == "serialize"), "Must have a serializer method.")
+	SEAL.logger.err_cond_false(get_method_list().any(func(dict:Dictionary):return dict["name"] == "deserialize"), "Must have a deserializer method.")
+	SEAL.logger.err_cond_false(get_method_list().any(func(dict:Dictionary):return dict["name"] == "is_value_valid"), "Must have a is_value_valid method.")
 	SEAL.logger.err_cond_null(default_value, "Default value must be set in constructor.")
-	var valid = value_is_valid_method.call(default_value)
+	var valid = call("is_value_valid", default_value)
 	if !valid is bool:
-		SEAL.logger.fatal("value_is_valid_method must return bool.")
+		SEAL.logger.fatal("is_value_valid must return bool.")
 	elif !valid:
 		SEAL.logger.fatal("Default value must be valid.")
 	self.identifier = identifier
-	self._group = _group
-	self.value = default_value
+	self._group = group
+	_value = default_value
 	self.default_value = default_value
 	self.tooltip = tooltip
 	if !SEAL.valid_setting_types.has(setting_type):
@@ -92,41 +83,63 @@ func _init(identifier:String, _group:String, tooltip:String, default_value, sett
 		self.setting_type = setting_type
 	self._locked = _locked
 
-##Helper method for serializing the core values of a setting, meant to be called from the "serializer_method" of inherited classes
-##Returns the same dictionary
-func serialize_base(dict:Dictionary)->Dictionary:
+##Main method for getting the value of this setting. Should always return a valid value of the type that you expect from the setting subclass that you've inherited.
+func get_value():
+	SEAL.logger.err_cond_false(!_locked, "Setting value is locked since it is not properly validated and should not be used.")
+	return _value
+
+##Main method for setting the value of this setting. Should always return a valid value of the type that you expect from the setting subclass that you've inherited.
+func set_value(val):
+	SEAL.logger.err_cond_false(!_locked, "Setting value is locked since it is not properly validated and should not be used.")
+	if call("is_value_valid", val):
+		_value = val
+	else:
+		SEAL.logger.err("Value is invalid, skipping.")
+
+#--Serialization--#
+
+##Helper method for serializing the values every setting has, meant to be called from the "serializer_method" of inherited classes.
+##dict - the dictionary that should be serialized.
+##serialize_value - whether the value should be serialized automatically or whether it should be serialized manually.
+##Returns the same dictionary.
+func serialize_base(dict:Dictionary, serialize_value:=true)->Dictionary:
 	dict["identifier"] = identifier
 	dict["group"] = _group
-	#Should in theory always be valid...
-	dict["value"] = value if value_is_valid_method.call(value) else default_value
+	#Should in theory always be valid...but we check anyways.
+	if call("is_value_valid", _value) && serialize_value:
+		dict["value"] = _value
 	dict["setting_type"] = setting_type if setting_type != "" && SEAL.valid_setting_types.has(setting_type) else "null"
 	dict["default_value"] = default_value
 	dict["tooltip"] = tooltip
 	return dict
 
-##Helper method for deserializing the core values of a setting, meant to be called from "deserializer_method" of inherited classes
-##Note: This method cannot be called if the setting is in locked state.
-func deserialize_base(dict:Dictionary):
-	if _locked:#See addon instructions for reference
+##Helper method for deserializing the values every setting has, meant to be called from "deserializer_method" of inherited classes
+##Note: This method cannot be called if the setting is in locked state since this is handled by the lambda passed in the static init.
+##dict - the dictionary that should be deserialized.
+##serialize_value - whether the value should be serialized automatically, if not, this method acts mostly as a check to see if there are any issues in the GSON.
+func deserialize_base(dict:Dictionary, serialize_value:=true)->void:
+	if _locked:
 		SEAL.logger.err("This method can only be used when setting is validated")
 		return
 	if !_check_types_in_settings_dict(identifier, dict):
 		SEAL.logger.info("Setting had type issues, skipping deserialization")
 		return
 	if dict["identifier"] != identifier:
-		SEAL.logger.warn("serialized setting identifier didn't match the preset, skipping. Do the key for the dict match the identifier? Did we get the wrong setting dict?")
+		SEAL.logger.warn("Serialized setting identifier didn't match the preset, skipping. Do the key for the dict match the identifier? Did we get the wrong setting dict?")
 		return
 	if dict["setting_type"] != setting_type: #Settings has been changed on disk by somebody or there is a bug, either way we warn.
 		SEAL.logger.warn("Serialized setting with identifier '" + identifier + "'has a setting type that differs from from the preset, Skipping.")
 		return
-	if !value_is_valid_method.call(dict["value"]): #Make sure we don't set the value to some corrupt or tampered value.
+	if !call("is_value_valid", dict["value"]): #Make sure we don't set the value to some corrupt or tampered value.
 		SEAL.logger.warn("Serialized setting with name '" + identifier + "' has a value that isn't valid. Using predefined value.")
 		return
 	if dict["default_value"] != default_value: #Settings has been changed on disk by somebody or there is a bug, either way we warn.
 		SEAL.logger.warn("Serialized setting with name '" + identifier + "' has a default value that differs from the preset. Using predefined value.")
 		return
-	value = dict["value"]
+	if serialize_value:
+		_value = dict["value"]
 
+#Internal Method that checks that core values in the passed dict that adheres to the standard set in the serialization API is present and of right type.
 static func _check_types_in_settings_dict(setting_name:String, dict:Dictionary)->bool:
 	if !_parameter_is_valid(dict, "identifier", TYPE_STRING, setting_name):
 		return false
@@ -153,12 +166,3 @@ static func _parameter_is_valid(dict:Dictionary, param_name:String, value_type:V
 	else:
 		return true
 
-##Internal method for overriding the _locked state of the setting.[BR]
-##Warning: Using this method can cause cause vunerabilities in your code since settings that aren't checked to be valid can alter your code flow in unexpected or malicious ways if you rely on them. Only use this if you know what you are doing and you implement your own fail safes.
-func _force_get_value():
-	return self.value
-
-##Internal method for overriding the _locked state of the setting.[BR]
-##Warning: Using this method can cause cause vunerabilities in your code since settings that aren't checked to be valid can alter your code flow in unexpected or malicious ways if you rely on them. Only use this if you know what you are doing and you implement your own fail safes.
-func _force_set_value(val):
-	self.value = val

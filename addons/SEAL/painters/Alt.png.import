@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7yc3b3whn0ao"
-path="res://.godot/imported/SearchIcon.png-cf0d1547052e7900f06f602744247b1c.ctex"
+uid="uid://dbvo36a4pwaoc"
+path="res://.godot/imported/Alt.png-be6c8b005bb794b1d65d73749c5c4518.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/SEAL/SearchIcon.png"
-dest_files=["res://.godot/imported/SearchIcon.png-cf0d1547052e7900f06f602744247b1c.ctex"]
+source_file="res://addons/SEAL/painters/Alt.png"
+dest_files=["res://.godot/imported/Alt.png-be6c8b005bb794b1d65d73749c5c4518.ctex"]
 
 [params]
 

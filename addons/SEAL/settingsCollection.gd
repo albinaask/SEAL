@@ -1,37 +1,47 @@
-extends RefCounted
+extends Node
 
-## SettingCollections can either be defined in code, such as in res://tests/settings_testing.tscn or generated from a raw GSON.
+## SettingCollections can either be defined in code, such as in "res://tests/Settings testing.tscn" or generated from a raw GSON file.
 ## The former is the standard and should always be used when you want to use the settings to control code.
 ## The latter is used to change settings while this code isn't loaded, like in game launchers, outside mod environments etc.
 ## This means that the settings are inferred from the GSON code, which may include typos, malware or whatever.
 ## When using this mode, all the validation has to be done by you, while the former handles all of that for you. 
+
+#TODO: Make the user can conviniently access global settingsCollections as singletons... for now the simplest solution is to just add them as a property to a singleton, or to the SEAL autoload...
 class_name SettingsCollection
 
-##All the settings that are tied to this collection MUST be in this array, it's not enough to keep them as class members!
+##All the settings that are tied to this collection MUST be in this dictionary, it's NOT enough to just have them as class members!
+##They also MUST have their identifier as the key in the dictionary.
 @export
-var settings := {}:
+var _settings := {}:
 	set(val):
-		SEAL.logger.err("This variable is not meant to be set directly, but rather appended to with new settings.")
+		SEAL.logger.err("This variable is not meant to be set, and is mostly internal to SEAL.")
 
 
-##shorthand add to avoid having to type out the name twice
+##Shorthand for adding a setting to the collection,so the user doesn't have to type out the identifier twice.
 func add_setting_to_dict(setting:Setting):
-	settings[setting.identifier] = setting
+	_settings[setting.identifier] = setting
 
-##Stores all the settings in this collection into a dictionary that can be written to a file, shipped over the internet or whatever.
-func serialize(path):
+func get_setting(identifier:String)->Setting:
+	return _settings[identifier]
+
+##Stores all the settings in this collection into a dictionary that can be written to a file, shipped over the internet or whatever you like.
+func serialize()->Dictionary:
 	var dict = Dictionary()
-	for setting:Setting in settings.values():
-		var ret = setting.serializer_method.call()
+	for setting:Setting in _settings.values():
+		var ret = setting.serialize()
 		if ret is Dictionary:
 			dict[ret["identifier"]] = ret
 		else:
 			SEAL.logger.err("Method bound to Setting.serializer_method must return dictionary.")
-	GSONParser.save_to_GSON(path, dict)
+	return dict
+	
 
-##Used for deserializing settings when there is no validation layer present. Prevents unsafe setting values from being used in the code.
-static func create_from_GSON(path)->SettingsCollection:
-	var dict := GSONParser.load_from_GSON(path)
+##This method is used to populate a SettingsCollection with data when the settings have already been defined.
+func deserialize(dict):
+	for setting:Setting in _settings.values():
+		setting.deserialize(dict[setting.identifier])
+
+static func create_locked_collection_from_dict(dict:Dictionary)->SettingsCollection:
 	var settings_collection = SettingsCollection.new()
 	for key in dict.keys():
 		var raw_setting = dict[key]
@@ -41,16 +51,24 @@ static func create_from_GSON(path)->SettingsCollection:
 		if !Setting._check_types_in_settings_dict(key, raw_setting):
 			continue
 		
-		var identifier:String = raw_setting["identifier"]
 		var type:String = raw_setting["setting_type"]
-		settings_collection.add_setting_to_dict(Setting.create_from_GSON_methods[type].call(raw_setting))
+		settings_collection.add_setting_to_dict(Setting.create_locked_collection_from_GSON_methods[type].call(raw_setting))
 	return settings_collection
 
-##This method is used to populate a SettingsCollection with data when the settings have already been defined.
-func deserialize(path):
+
+#----GSON----#
+
+##Saves the settings collection to a GSON file.
+func save_to_GSON(path):
+	GSONParser.save_to_GSON(path, serialize())
+
+##Loads the settings collection from a GSON file.
+func load_from_GSON(path):
 	if !FileAccess.file_exists(path):
-		SEAL.logger.info("SEAL couldn't find file to serialize from, using default values.")
+		SEAL.logger.err("SEAL couldn't find file to serialize from, aborting.")
 	else:
-		var dict := GSONParser.load_from_GSON(path)
-		for setting:Setting in settings.values():
-			setting.deserializer_method.call(dict[setting.identifier])
+		deserialize(GSONParser.load_from_GSON(path))
+
+##Used for deserializing settings when there is no validation layer present. Prevents unsafe setting values from being used in the code.
+static func create_locked_collection_from_GSON(path)->SettingsCollection:
+	return create_locked_collection_from_dict(GSONParser.load_from_GSON(path))

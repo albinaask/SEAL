@@ -1,12 +1,16 @@
 extends PanelContainer
 
 class_name AbstractSettingsPainter
-##this class is not to be added to the tree by itself, but instead inherited.
+##this class is not to be added to the tree by itself, but should instead be inherited by scenes that are derivetives from AbstractSettingsPainter.tscn, see IntSettingsPainter.tscn for reference.
 
+##Minimum height of the setting, used so the settings dont shrink to just covering the text and looking weird.
 const MIN_SETTING_HEIGHT = 40
+##Margin between the contence and the other elements.
 const MARGIN = 0
+##Add some extra space for the scroll bar 
 const SCROLL_MARGIN = 10
 
+#internals for referencing nodes.
 var _title_label : Label
 var _value_group : Control
 var _reset_button : Button
@@ -15,7 +19,7 @@ var setting:Setting
 
 var _proxy_value:
 	set(val):
-		SEAL.logger.err_cond_false(setting.value_is_valid_method.call(val), "proxy values must be valid setting values.")
+		SEAL.logger.err_cond_false(setting.call("is_value_valid", val), "Proxy values must be valid setting values.")
 		_proxy_value = val
 		_update_visual_value()
 
@@ -38,7 +42,7 @@ func _on_show(setting:Setting):
 	if !setting.on_setting_changed.is_connected(_update_visual_value):
 		setting.on_setting_changed.connect(_update_visual_value)
 	
-	_proxy_value = setting._force_get_value()
+	_proxy_value = setting._value
 	var translated = tr(setting.identifier)
 	_title_label.text = translated if setting.identifier != translated else setting.identifier.replace("_", " ")
 	_title_label.tooltip_text = setting.tooltip
@@ -46,7 +50,6 @@ func _on_show(setting:Setting):
 	_reset_button.visible = _proxy_value != setting.default_value
 	
 	on_show_func.call()
-	update_visuals_method.call()
 
 
 func _sort_children():
@@ -82,7 +85,7 @@ func _sort_children():
 		_value_group.anchor_top = 0
 		
 		_value_group.offset_left = MARGIN
-		_value_group.offset_right = -MARGIN-SCROLL_MARGIN
+		_value_group.offset_right = -MARGIN
 		_value_group.offset_top = MARGIN
 		_value_group.offset_bottom = -MARGIN
 		
@@ -94,8 +97,7 @@ func _sort_children():
 			if child is Control:
 				min_size.y = max(child.size.y, min_size.y)
 				min_size.x = child.size.x + min_size.x
-		
-		custom_minimum_size = Vector2(min_size.x+2*MARGIN-SCROLL_MARGIN, 2*MARGIN + max(MIN_SETTING_HEIGHT, min_size.y)/2)
+		custom_minimum_size = Vector2(min_size.x+2*MARGIN+SCROLL_MARGIN, 2*MARGIN + max(MIN_SETTING_HEIGHT, min_size.y)/2)
 
 
 func _on_reset_button_pressed():

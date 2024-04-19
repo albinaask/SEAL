@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dr06uhafck2br"
-path="res://.godot/imported/OpenSectionIcon.png-be12360f6d74606ba30fba6696f094e3.ctex"
+uid="uid://cwdl3ln028ffo"
+path="res://.godot/imported/Shift.png-672042f029762d00b780300cff9a57eb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/SEAL/OpenSectionIcon.png"
-dest_files=["res://.godot/imported/OpenSectionIcon.png-be12360f6d74606ba30fba6696f094e3.ctex"]
+source_file="res://addons/SEAL/painters/Shift.png"
+dest_files=["res://.godot/imported/Shift.png-672042f029762d00b780300cff9a57eb.ctex"]
 
 [params]
 

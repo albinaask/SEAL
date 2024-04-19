@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ckte3ujuk4lhf"]
 
-[ext_resource type="Theme" uid="uid://ch7cischb5kn8" path="res://addons/SEAL/BaseTheme.res" id="1_2a0me"]
-[ext_resource type="PackedScene" uid="uid://bmftyc5y0aned" path="res://addons/SEAL/SettingsPanel.tscn" id="1_bx0qr"]
+[ext_resource type="Theme" uid="uid://ch7cischb5kn8" path="res://addons/SEAL/visualizers/BaseTheme.res" id="1_2a0me"]
+[ext_resource type="PackedScene" uid="uid://bmftyc5y0aned" path="res://addons/SEAL/visualizers/SettingsPanel.tscn" id="1_bx0qr"]
 
 [sub_resource type="GDScript" id="GDScript_fan2p"]
 script/source = "extends ConfirmationDialog

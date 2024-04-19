@@ -1,18 +1,18 @@
 [gd_scene load_steps=3 format=3 uid="uid://ne65bxa7ia7"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/SettingTypes/AbstractSettingsPainter.tscn" id="1_fymy3"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_fymy3"]
 
 [sub_resource type="GDScript" id="1"]
 script/source = "extends VectorFSettingsPainter
 
 
 func _ready() -> void:
-	_boxes = [$ValueGroup/Vec/XBox, $ValueGroup/Vec/YBox]
+	_boxes = [$ValueGroup/Vec/XBox, $ValueGroup/Vec/YBox, $ValueGroup/Vec/ZBox]
 	_connect_boxes()
 
 "
 
-[node name="Vec2Setting" instance=ExtResource("1_fymy3")]
+[node name="Vec3Setting" instance=ExtResource("1_fymy3")]
 script = SubResource("1")
 
 [node name="Vec" type="GridContainer" parent="ValueGroup" index="0"]
@@ -33,4 +33,11 @@ layout_mode = 2
 text = "Y:"
 
 [node name="YBox" type="LineEdit" parent="ValueGroup/Vec" index="3"]
+layout_mode = 2
+
+[node name="ZLabel" type="Label" parent="ValueGroup/Vec" index="4"]
+layout_mode = 2
+text = "Z:"
+
+[node name="ZBox" type="LineEdit" parent="ValueGroup/Vec" index="5"]
 layout_mode = 2

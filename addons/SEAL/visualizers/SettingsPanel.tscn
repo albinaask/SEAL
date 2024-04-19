@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bmftyc5y0aned"]
 
-[ext_resource type="Script" path="res://addons/SEAL/SettingsPanel.gd" id="1_4t6q3"]
+[ext_resource type="Script" path="res://addons/SEAL/visualizers/SettingsPanel.gd" id="1_4t6q3"]
 
 [node name="SettingsPanel" type="VBoxContainer"]
 anchors_preset = 15
@@ -22,6 +22,7 @@ placeholder_text = "search"
 [node name="SettingsPane" type="ScrollContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="SettingsPane"]
 show_behind_parent = true

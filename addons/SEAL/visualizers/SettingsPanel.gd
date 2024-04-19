@@ -3,9 +3,9 @@ extends VBoxContainer
 class_name SettingsPanel
 
 
-@export var open_section_icon: Texture2D = preload("res://addons/SEAL/OpenSectionIcon.png")
-@export var closed_section_icon: Texture2D = preload("res://addons/SEAL/ClosedSectionIcon.png")
-@export var reset_icon: Texture2D = preload("res://addons/SEAL/ResetSettingIcon.png")
+@export var open_section_icon: Texture2D = preload("res://addons/SEAL/visualizers/OpenSectionIcon.png")
+@export var closed_section_icon: Texture2D = preload("res://addons/SEAL/visualizers/ClosedSectionIcon.png")
+@export var reset_icon: Texture2D = preload("res://addons/SEAL/visualizers/ResetSettingIcon.png")
 
 
 @onready var _setting_container = $SettingsPane/VBoxContainer
@@ -25,7 +25,7 @@ func _ready():
 ##connected to the panels signal with the same name
 func on_made_visible():
 	if is_inside_tree() && settings_collection:#fire only if made visible and in scene tree
-		var settings = settings_collection.settings
+		var settings = settings_collection._settings
 		for setting in settings.values():
 			var group_name:String = setting._group
 			if !group_settings_dict.keys().has(group_name):
@@ -69,8 +69,8 @@ func _update_visuals():
 	for group_name in group_settings_dict:
 		var match_group_name = group_name.count(search_term)>0
 		var has_matching_setting = false
-		for setting:AbstractSettingsPainter in group_settings_dict[group_name]:
-			setting.visible = search_term == "" || match_group_name || setting.name.count(search_term)>0
+		for settings_painter:AbstractSettingsPainter in group_settings_dict[group_name]:
+			settings_painter.visible = search_term == "" || match_group_name || settings_painter.setting.identifier.count(search_term)>0
 			has_matching_setting = true
 		group_button_dict[group_name].visible = match_group_name || search_term == ""
 
@@ -87,5 +87,5 @@ func _on_root_size_changed():
 
 func _confirm():
 	for painter:AbstractSettingsPainter in group_settings_dict.values():
-		painter.setting._force_set_value(painter._proxy_value)
+		painter.setting._value = painter._proxy_value
 		on_confirmed.emit()
