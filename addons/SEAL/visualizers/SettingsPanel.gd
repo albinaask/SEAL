@@ -80,11 +80,6 @@ func _on_search_changed(_new_text):
 	_update_visuals()
 
 
-##Internal method connected to the of the window. Makes sure that the settings fill the entire scroll panel.
-func _on_root_size_changed():
-	_setting_container.size.x = size.x
-
-
 func _confirm():
 	for painter:AbstractSettingsPainter in group_settings_dict.values():
 		painter.setting._value = painter._proxy_value

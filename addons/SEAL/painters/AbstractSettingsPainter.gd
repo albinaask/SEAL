@@ -51,6 +51,13 @@ func _on_show(setting:Setting):
 	
 	on_show_func.call()
 
+func _get_minimum_size():
+		var min_size = Vector2()
+		for child in get_children():
+			if child is Control:
+				min_size.y = max(child.size.y, min_size.y)
+				min_size.x = child.size.x + min_size.x
+		return Vector2(min_size.x+2*MARGIN+SCROLL_MARGIN, 2*MARGIN + max(MIN_SETTING_HEIGHT, min_size.y)/2)
 
 func _sort_children():
 	
@@ -91,13 +98,6 @@ func _sort_children():
 		
 		_value_group.size_flags_horizontal = SIZE_EXPAND_FILL
 		_value_group.size_flags_vertical = SIZE_EXPAND_FILL
-		
-		var min_size = Vector2()
-		for child in get_children():
-			if child is Control:
-				min_size.y = max(child.size.y, min_size.y)
-				min_size.x = child.size.x + min_size.x
-		custom_minimum_size = Vector2(min_size.x+2*MARGIN+SCROLL_MARGIN, 2*MARGIN + max(MIN_SETTING_HEIGHT, min_size.y)/2)
 
 
 func _on_reset_button_pressed():

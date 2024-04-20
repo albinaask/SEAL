@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://civq7vlw6wx7j"]
 
 [ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_1p6xf"]
-[ext_resource type="Texture2D" uid="uid://cwdl3ln028ffo" path="res://addons/SEAL/painters/Shift.png" id="2_n3aqh"]
-[ext_resource type="Texture2D" uid="uid://b2ncf6421urv5" path="res://addons/SEAL/painters/Ctrl.png" id="3_c5git"]
-[ext_resource type="Texture2D" uid="uid://dbvo36a4pwaoc" path="res://addons/SEAL/painters/Alt.png" id="4_vcey3"]
+[ext_resource type="Texture2D" uid="uid://cwdl3ln028ffo" path="res://addons/SEAL/painters/Shift.png" id="2_6hi8n"]
+[ext_resource type="Texture2D" uid="uid://b2ncf6421urv5" path="res://addons/SEAL/painters/Ctrl.png" id="3_1s8la"]
+[ext_resource type="Texture2D" uid="uid://dbvo36a4pwaoc" path="res://addons/SEAL/painters/Alt.png" id="4_ke42t"]
 
 [sub_resource type="GDScript" id="1"]
 script/source = "extends AbstractSettingsPainter
@@ -89,21 +89,21 @@ layout_mode = 2
 [node name="ShiftIcon" type="TextureRect" parent="ValueGroup/VBoxContainer/HBoxContainer" index="0"]
 custom_minimum_size = Vector2(75, 50)
 layout_mode = 2
-texture = ExtResource("2_n3aqh")
+texture = ExtResource("2_6hi8n")
 expand_mode = 1
 stretch_mode = 6
 
 [node name="CtrlIcon" type="TextureRect" parent="ValueGroup/VBoxContainer/HBoxContainer" index="1"]
 custom_minimum_size = Vector2(75, 50)
 layout_mode = 2
-texture = ExtResource("3_c5git")
+texture = ExtResource("3_1s8la")
 expand_mode = 1
 stretch_mode = 6
 
 [node name="AltIcon" type="TextureRect" parent="ValueGroup/VBoxContainer/HBoxContainer" index="2"]
 custom_minimum_size = Vector2(75, 50)
 layout_mode = 2
-texture = ExtResource("4_vcey3")
+texture = ExtResource("4_ke42t")
 expand_mode = 1
 stretch_mode = 6
 
