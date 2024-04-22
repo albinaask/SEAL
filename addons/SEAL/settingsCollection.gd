@@ -18,10 +18,11 @@ var _settings := {}:
 
 
 ##Shorthand for adding a setting to the collection,so the user doesn't have to type out the identifier twice.
-func add_setting_to_dict(setting:Setting):
+func add_setting(setting:Setting):
 	_settings[setting.identifier] = setting
 
 func get_setting(identifier:String)->Setting:
+	SEAL.logger.err_cond_false(_settings.has(identifier), "No setting found in this collection with identifier ", false, identifier)
 	return _settings[identifier]
 
 ##Stores all the settings in this collection into a dictionary that can be written to a file, shipped over the internet or whatever you like.
@@ -52,7 +53,7 @@ static func create_locked_collection_from_dict(dict:Dictionary)->SettingsCollect
 			continue
 		
 		var type:String = raw_setting["setting_type"]
-		settings_collection.add_setting_to_dict(Setting.create_locked_collection_from_GSON_methods[type].call(raw_setting))
+		settings_collection.add_setting(Setting.create_locked_collection_from_GSON_methods[type].call(raw_setting))
 	return settings_collection
 
 

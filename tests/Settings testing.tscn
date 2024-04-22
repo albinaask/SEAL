@@ -73,32 +73,32 @@ class TestSettingCollection extends SettingsCollection:
 	
 	func _init() -> void:
 		#We add our shorthand setting to the settings dict of the collection.
-		add_setting_to_dict(test_setting_1)
+		add_setting(test_setting_1)
 		
 		#We add some more settings that we want to test with.
-		add_setting_to_dict(Vector2Setting.new(\"setting_3\", \"group 2\", \"A Vec2 setting\", Vector2(1,2), Vector2(0,0), Vector2(10,10), \"kg\"))
+		add_setting(Vector2Setting.new(\"setting_3\", \"group 2\", \"A Vec2 setting\", Vector2(1,2), Vector2(0,0), Vector2(10,10), \"kg\"))
 		
 		#We add an int setting that has an initial value of 1, a min value of 0, a max value of 10, and a unit of \"pcs\"(short for pieces), but any string goes as unit.
 		#Note: min value must be less than max value and default_value must lay in between.
-		add_setting_to_dict(IntSetting.new(\"setting_2\", \"group 2\", \"my special int setting\", 1, 0, 10, \"pcs\"))
+		add_setting(IntSetting.new(\"setting_2\", \"group 2\", \"my special int setting\", 1, 0, 10, \"pcs\"))
 		#floats can have the same range behaviour, but we don't have to add that info. Neither do we on int.
-		add_setting_to_dict(FloatSetting.new(\"setting_4\", \"float group\", \"my special float setting\"))
-		add_setting_to_dict(Vector2Setting.new(\"setting_5\", \"vector group\", \"my special vector2 setting\"))
+		add_setting(FloatSetting.new(\"setting_4\", \"float group\", \"my special float setting\"))
+		add_setting(Vector2Setting.new(\"setting_5\", \"vector group\", \"my special vector2 setting\"))
 		
 		#Vector settings ar the same, but we pass Vectors in as min and max values, which are the per diameter min and max.
-		add_setting_to_dict(Vector3Setting.new(\"vector3_setting\", \"vector group\", \"a Vector3 setting\", Vector3(1,2,3), Vector3(-10, -10, -10), Vector3(10, 10, 10), \"m\"))
-		add_setting_to_dict(Vector4Setting.new(\"vector4_setting\", \"vector group\", \"a Vector4 setting\", Vector4(1,2,3,4), Vector4(-10, -10, -10,-10), Vector4(10, 10, 10, 10), \"m\"))
+		add_setting(Vector3Setting.new(\"vector3_setting\", \"vector group\", \"a Vector3 setting\", Vector3(1,2,3), Vector3(-10, -10, -10), Vector3(10, 10, 10), \"m\"))
+		add_setting(Vector4Setting.new(\"vector4_setting\", \"vector group\", \"a Vector4 setting\", Vector4(1,2,3,4), Vector4(-10, -10, -10,-10), Vector4(10, 10, 10, 10), \"m\"))
 
-		add_setting_to_dict(Vector2iSetting.new(\"Vector2i_setting\", \"vector2i group\", \"my special Vector2i setting\"))
-		add_setting_to_dict(Vector3iSetting.new(\"Vector3i_setting\", \"vector3i group\", \"my special Vector3i setting\"))
-		add_setting_to_dict(Vector4iSetting.new(\"Vector4i_setting\", \"vector4i group\", \"my special Vector4i setting\"))
+		add_setting(Vector2iSetting.new(\"Vector2i_setting\", \"vector2i group\", \"my special Vector2i setting\"))
+		add_setting(Vector3iSetting.new(\"Vector3i_setting\", \"vector3i group\", \"my special Vector3i setting\"))
+		add_setting(Vector4iSetting.new(\"Vector4i_setting\", \"vector4i group\", \"my special Vector4i setting\"))
 		
-		add_setting_to_dict(StringSetting.new(\"My string setting\", \"String group\", \"some tooltip\"))
-		add_setting_to_dict(ColorSetting.new(\"Color\", \"group 2\", \"\"))
+		add_setting(StringSetting.new(\"My string setting\", \"String group\", \"some tooltip\"))
+		add_setting(ColorSetting.new(\"Color\", \"group 2\", \"\"))
 		var def_key = InputEventKey.new()
 		def_key.keycode = KEY_G
 		def_key.shift_pressed = true
-		add_setting_to_dict(KeySetting.new(\"crouch\", \"gorup 2\", \"this key is used to crouch.\", def_key))
+		add_setting(KeySetting.new(\"crouch\", \"gorup 2\", \"this key is used to crouch.\", def_key))
 
 
 "
