@@ -13,6 +13,7 @@ static func _static_init() -> void:
 
 
 func _init(identifier:String, group:String, tooltip:String, default_value:=Color.BLACK, use_alpha:=false, _locked:=false) -> void:
+	self.use_alpha = use_alpha
 	super(identifier, group, tooltip, default_value, _TYPE, _locked)
 
 func get_settings_painter_scene():
