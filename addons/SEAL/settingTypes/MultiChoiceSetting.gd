@@ -20,16 +20,16 @@ func get_settings_painter_scene():
 	return load("res://addons/SEAL/painters/MultiChoiceSettingsPainter.tscn")
 
 func is_value_valid(val)->bool:
-	return val is bool
+	return val is String && allowed_values.has(val)
 
 #----Serialization----#
 
-##Serializes this setting into a disctionary that can be stored as a GSON.
+##Serializes this setting into a dictionary that can be stored as a GSON.
 func serialize()->Dictionary:
-	#Since MultiChoiceSetting does not need to store any additional data, we need no more than this.
-	return serialize_base({})
+	
+	return serialize_base({"allowed_values":allowed_values})
 
-##Deserializes the setting values from the supplied dictionary. This is used in the case there is a 
+
 func deserialize(dict:Dictionary)->void:
-	#Since MultiChoiceSetting does not contain any additional data, we need no more than this.
+	allowed_values = dict["allowed_values"]
 	deserialize_base(dict)

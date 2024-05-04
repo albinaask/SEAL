@@ -28,7 +28,7 @@ func is_value_valid(val)->bool:
 
 #----Serialization----#
 
-##Serializes this setting Vector4o a disctionary that can be stored as a GSON.
+##Serializes this setting Vector4o a dictionary that can be stored as a GSON.
 func serialize()->Dictionary:
 	var dict  = {}
 	dict["max_value"] = max_value

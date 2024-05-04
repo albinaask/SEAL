@@ -23,3 +23,8 @@ SEAL="*res://addons/SEAL/SEAL.gd"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/SEAL/plugin.cfg", "res://addons/logger/plugin.cfg")
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://tests/translations.sv.translation")
+locale/test="sv"

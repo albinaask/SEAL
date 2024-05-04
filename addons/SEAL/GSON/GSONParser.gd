@@ -36,30 +36,42 @@ static var _current_index := 0
 #internal variable holding the file contence, used during GSON loading.
 static var _gson_string := ""
 
+
+##Saves the passed dict to a file in GSON format.
 static func save_to_GSON(path:String, dict:Dictionary):
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	Log.err_cond_not_ok(FileAccess.get_open_error(), "Couldn't open '" + path  + "'. Inside of res:// in exported build? No access? No HD space?")
 	file.store_string(var_to_str(dict))
 
+##get the file containing the GSON information as a dict.
 static func load_from_GSON(path:String)->Dictionary:
 	if !FileAccess.file_exists(path):
 		Log.err("Couldn't find file '" + path + "'")
 		return {}
+	return load_from_string(FileAccess.get_file_as_string(path))
+
+
+##Convert the passed text string in GSON_format to the corresponding dict
+static func load_from_string(string)->Dictionary:
 	_current_index = 0
-	_gson_string = FileAccess.get_file_as_string(path)
-	if _gson_string.is_empty():
-		Log.err("File access failed or is empty")
-		return {}
-	if !_gson_string.begins_with("{"):
-		Log.err("GSON files must start with '{'")
-		return {}
-	if !_gson_string.ends_with("}"):
-		Log.err("GSON files must end with '}'")
+	_gson_string = string
+	if _check_problems():
 		return {}
 	_skip_whitespace()
 	return _parse_value()
-
-
+	
+##returns whether error
+static func _check_problems()->bool:
+	if _gson_string.is_empty():
+		Log.err("File access failed or is empty")
+		return true
+	if !_gson_string.begins_with("{"):
+		Log.err("GSON files must start with '{'")
+		return true
+	if !_gson_string.ends_with("}"):
+		Log.err("GSON files must end with '}'")
+		return true
+	return false
 
 static func _skip_whitespace():
 	while _current_index < _gson_string.length() && (_gson_string[_current_index] == ' ' || _gson_string[_current_index] == '\n' ||_gson_string[_current_index] == '\t' || _gson_string[_current_index] == '\r'):

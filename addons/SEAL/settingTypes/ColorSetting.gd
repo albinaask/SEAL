@@ -13,7 +13,12 @@ static func _static_init() -> void:
 
 
 func _init(identifier:String, group:String, tooltip:String, default_value:=Color.BLACK, use_alpha:=false, _locked:=false) -> void:
+	self.use_alpha = use_alpha
+	values_are_equal_method = func(val1:Color, val2:Color):return val1.is_equal_approx(val2)
+	
 	super(identifier, group, tooltip, default_value, _TYPE, _locked)
+	#Colors are weird in godot.
+	
 
 func get_settings_painter_scene():
 	return load("res://addons/SEAL/painters/ColorSettingsPainter.tscn")
@@ -23,7 +28,7 @@ func is_value_valid(val)->bool:
 
 #----Serialization----#
 
-##Serializes this setting into a disctionary that can be stored as a GSON.
+##Serializes this setting into a dictionary that can be stored as a GSON.
 func serialize()->Dictionary:
 	var dict = {}
 	dict["use_alpha"] = use_alpha

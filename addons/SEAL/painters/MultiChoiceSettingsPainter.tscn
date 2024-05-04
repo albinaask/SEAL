@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsasijr8tc468"]
+
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_10oe5"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends AbstractSettingsPainter
+
+var _option_button:OptionButton
+
+func _init() -> void:
+	update_visuals_method = update_visuals
+
+func update_visuals():
+	_option_button = $ValueGroup/MenuButton
+	_option_button.clear()
+	#Assume we hook to an MultiChoiceSetting
+	for option in setting.allowed_values:
+		_option_button.add_value(option)
+	_option_button.text = _proxy_value
+
+
+func _on_value_changed():
+	_proxy_value = _option_button.text
+"
+
+[node name="BoolSetting" instance=ExtResource("1_10oe5")]
+script = SubResource("1")
+
+[node name="OptionButton" type="OptionButton" parent="ValueGroup" index="0"]
+layout_mode = 2
+focus_mode = 1
+
+[connection signal="pressed" from="ValueGroup/OptionButton" to="." method="_on_value_changed"]

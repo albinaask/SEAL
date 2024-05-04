@@ -28,7 +28,7 @@ func is_value_valid(val)->bool:
 
 #----Serialization----#
 
-##Serializes this setting floato a disctionary that can be stored as a GSON.
+##Serializes this setting floato a dictionary that can be stored as a GSON.
 func serialize()->Dictionary:
 	var dict  = {}
 	dict["max_value"] = max_value

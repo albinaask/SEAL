@@ -25,7 +25,7 @@ func is_value_valid(val)->bool:
 
 #----Serialization----#
 
-##Serializes this setting into a disctionary that can be stored as a GSON.
+##Serializes this setting into a dictionary that can be stored as a GSON.
 ##Since we can't store the key event as in a GSON we store its constituents.
 func serialize()->Dictionary:
 	var dict = serialize_base({}, false)
