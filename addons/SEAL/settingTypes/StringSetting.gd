@@ -21,7 +21,7 @@ func is_value_valid(val)->bool:
 
 #----Serialization----#
 
-##Serializes this setting Stringo a disctionary that can be stored as a GSON.
+##Serializes this setting Stringo a dictionary that can be stored as a GSON.
 func serialize()->Dictionary:
 	return serialize_base({})
 

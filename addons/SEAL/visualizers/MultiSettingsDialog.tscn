@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://hbgtns12ds5m"]
+
+[ext_resource type="Theme" uid="uid://ch7cischb5kn8" path="res://addons/SEAL/visualizers/BaseTheme.res" id="1_fxr03"]
+[ext_resource type="Script" path="res://addons/SEAL/visualizers/MultiSettingsDialog.gd" id="2"]
+
+[node name="MultiSettingsDialog" type="ConfirmationDialog"]
+theme = ExtResource("1_fxr03")
+script = ExtResource("2")
+
+[node name="TabContainer" type="TabContainer" parent="."]
+offset_left = 6.0
+offset_top = 5.0
+offset_right = 858.0
+offset_bottom = 481.0
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

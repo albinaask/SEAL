@@ -16,7 +16,6 @@ var _settings := {}:
 	set(val):
 		SEAL.logger.err("This variable is not meant to be set, and is mostly internal to SEAL.")
 
-
 ##Shorthand for adding a setting to the collection,so the user doesn't have to type out the identifier twice.
 func add_setting(setting:Setting):
 	_settings[setting.identifier] = setting
@@ -38,9 +37,12 @@ func serialize()->Dictionary:
 	
 
 ##This method is used to populate a SettingsCollection with data when the settings have already been defined.
-func deserialize(dict):
+func deserialize(dict:Dictionary):
 	for setting:Setting in _settings.values():
-		setting.deserialize(dict[setting.identifier])
+		if dict.has(setting.identifier):
+			setting.deserialize(dict[setting.identifier])
+		else:
+			SEAL.logger.dbg("deserialization source dict didn't have the key '" + setting.identifier + "', skipping this setting.")
 
 static func create_locked_collection_from_dict(dict:Dictionary)->SettingsCollection:
 	var settings_collection = SettingsCollection.new()
@@ -53,6 +55,7 @@ static func create_locked_collection_from_dict(dict:Dictionary)->SettingsCollect
 			continue
 		
 		var type:String = raw_setting["setting_type"]
+		
 		settings_collection.add_setting(Setting.create_locked_collection_from_GSON_methods[type].call(raw_setting))
 	return settings_collection
 

@@ -7,8 +7,6 @@ script/source = "extends AbstractSettingsPainter
 
 @onready var _picker = $ValueGroup/Picker
 
-func _init() -> void:
-	update_visuals_method = update_visuals
 
 func update_visuals():
 	_picker.color = _proxy_value
@@ -16,13 +14,9 @@ func update_visuals():
 
 func _on_value_changed(color:Color):
 	_proxy_value = color
-
-
-func _on_picker_pressed():
-	update_visuals()
 "
 
-[node name="ColorSetting" instance=ExtResource("1_ypb38")]
+[node name="ColorSettingsPainter" instance=ExtResource("1_ypb38")]
 script = SubResource("1")
 
 [node name="Picker" type="ColorPickerButton" parent="ValueGroup" index="0"]

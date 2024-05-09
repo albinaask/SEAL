@@ -16,7 +16,6 @@ var settings_collection:SettingsCollection
 var group_settings_dict := {}
 var group_button_dict := {}
 
-signal on_confirmed
 
 func _ready():
 	assert(get_tree().root.connect("size_changed",Callable(self,"_on_root_size_changed"))==OK)
@@ -79,8 +78,8 @@ func _update_visuals():
 func _on_search_changed(_new_text):
 	_update_visuals()
 
-
-func _confirm():
-	for painter:AbstractSettingsPainter in group_settings_dict.values():
-		painter.setting._value = painter._proxy_value
-		on_confirmed.emit()
+##Called on dialog cofirm to update the setting values to whatever the proxy values  are.
+func _resync_settings():
+	for group_contence:Array in group_settings_dict.values():
+		for painter:AbstractSettingsPainter in group_contence:
+			painter.setting._value = painter._proxy_value

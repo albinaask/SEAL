@@ -1,12 +1,6 @@
-extends OWLUIDialog
+extends ConfirmationDialog
 
 var packed_settings_panel:PackedScene = load("res://legacy/settings/OWLSettingsPanel.tscn")
-var _mod_settings_panels := []
-
-
-func _init():
-	#OWLWorldLoader.on_mod_settings_init.connect(_preload_settings_panel)
-	pass
 
 ##This is done deferred since if the loading is done async, this signal may come
 ##before this is inside the scene tree and therefore crash.

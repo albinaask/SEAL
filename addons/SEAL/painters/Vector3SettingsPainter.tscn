@@ -12,7 +12,7 @@ func _ready() -> void:
 
 "
 
-[node name="Vec3Setting" instance=ExtResource("1_fymy3")]
+[node name="Vec3SettingsPainter" instance=ExtResource("1_fymy3")]
 script = SubResource("1")
 
 [node name="Vec" type="GridContainer" parent="ValueGroup" index="0"]

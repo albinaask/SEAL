@@ -28,3 +28,4 @@ func _init():
 	valid_setting_types.append(StringSetting._TYPE)
 	valid_setting_types.append(ColorSetting._TYPE)
 	valid_setting_types.append(KeySetting._TYPE)
+	valid_setting_types.append(MultiChoiceSetting._TYPE)
