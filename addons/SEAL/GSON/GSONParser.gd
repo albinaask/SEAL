@@ -41,7 +41,34 @@ static var _gson_string := ""
 static func save_to_GSON(path:String, dict:Dictionary):
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	Log.err_cond_not_ok(FileAccess.get_open_error(), "Couldn't open '" + path  + "'. Inside of res:// in exported build? No access? No HD space?")
-	file.store_string(var_to_str(dict))
+	file.store_string(save_to_string(dict))
+
+
+static func save_to_string(dict:Dictionary)->String:
+	SEAL.logger.err_cond_false(validate_type(dict), "GSONParser.save_to_string() was passed an invalid dict.")
+	return var_to_str(dict)
+
+##Check if the passed value is of a valid type for storing in GSON.
+static func validate_type(val)->bool:
+	if valid_types.values().has(typeof(val)):
+		return true
+	elif val is Dictionary:
+		var valid = true
+		for v in val.keys():
+			valid = valid && validate_type(v)
+		for v in val.values():
+			valid = valid && validate_type(v)
+		return valid
+	elif val is Array:
+		var valid = true
+		for v in val:
+			valid = valid && validate_type(v)
+		return valid
+	else:
+		SEAL.logger.info("Value: " + str(val) + " is not of a valid type.")
+		var type = typeof(val)
+		return false
+
 
 ##get the file containing the GSON information as a dict.
 static func load_from_GSON(path:String)->Dictionary:
@@ -55,23 +82,18 @@ static func load_from_GSON(path:String)->Dictionary:
 static func load_from_string(string)->Dictionary:
 	_current_index = 0
 	_gson_string = string
-	if _check_problems():
+	if _gson_string.is_empty():
+		Log.warn("GSON string is empty")
+		return {}
+	if !_gson_string.begins_with("{"):
+		Log.warn("GSON files must start with '{'")
+		return {}
+	if !_gson_string.ends_with("}"):
+		Log.warn("GSON files must end with '}'")
 		return {}
 	_skip_whitespace()
 	return _parse_value()
-	
-##returns whether error
-static func _check_problems()->bool:
-	if _gson_string.is_empty():
-		Log.err("File access failed or is empty")
-		return true
-	if !_gson_string.begins_with("{"):
-		Log.err("GSON files must start with '{'")
-		return true
-	if !_gson_string.ends_with("}"):
-		Log.err("GSON files must end with '}'")
-		return true
-	return false
+
 
 static func _skip_whitespace():
 	while _current_index < _gson_string.length() && (_gson_string[_current_index] == ' ' || _gson_string[_current_index] == '\n' ||_gson_string[_current_index] == '\t' || _gson_string[_current_index] == '\r'):
@@ -109,6 +131,12 @@ static func _parse_value() -> Variant:
 				return int(identifier)
 			elif identifier.is_valid_float():
 				return float(identifier)
+			elif identifier == "inf":
+				return INF
+			elif identifier == "inf_neg":
+				return -INF
+			elif identifier == "nan":
+				return NAN
 			elif valid_types.keys().has(identifier):
 				var data_length := 0
 				var data_str := ""
@@ -120,12 +148,9 @@ static func _parse_value() -> Variant:
 					char = _gson_string[_current_index]
 				_current_index += 1 #move past )
 				return str_to_var(identifier + data_str + ")")
-			elif identifier == "inf":
-				return INF
-			elif identifier == "inf_neg":
-				return -INF
-			elif identifier == "nan":
-				return NAN
+			elif ClassDB.class_exists(identifier):
+				Log.err("Non-builtin types are not permitted to store in GSON. Can't parse '" + identifier + "'")
+				return null
 			else:
 				Log.err("Invalid identifier: '" + identifier + "'")
 				return null

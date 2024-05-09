@@ -7,8 +7,7 @@ script/source = "extends AbstractSettingsPainter
 
 var _option_button:OptionButton
 
-func _init() -> void:
-	update_visuals_method = update_visuals
+
 
 func update_visuals():
 	_option_button = $ValueGroup/MenuButton
@@ -23,7 +22,7 @@ func _on_value_changed():
 	_proxy_value = _option_button.text
 "
 
-[node name="BoolSetting" instance=ExtResource("1_10oe5")]
+[node name="MultiChoiceSettingsPainter" instance=ExtResource("1_10oe5")]
 script = SubResource("1")
 
 [node name="OptionButton" type="OptionButton" parent="ValueGroup" index="0"]

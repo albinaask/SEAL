@@ -5,8 +5,7 @@
 [sub_resource type="GDScript" id="1"]
 script/source = "extends AbstractSettingsPainter
 
-func _init() -> void:
-	update_visuals_method = update_visuals
+
 
 func update_visuals():
 	if _proxy_value != $ValueGroup/ValueBox.text:#if reset
@@ -17,7 +16,7 @@ func _on_value_box_text_changed(new_text: String) -> void:
 	_proxy_value = new_text
 "
 
-[node name="StringSetting" instance=ExtResource("1_wlp3v")]
+[node name="StringSettingsPainter" instance=ExtResource("1_wlp3v")]
 script = SubResource("1")
 
 [node name="ValueBox" type="LineEdit" parent="ValueGroup" index="0"]

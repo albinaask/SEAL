@@ -1,0 +1,140 @@
+{
+"Color": {
+"default_value": Color(0, 0, 0, 1),
+"group": "group 2",
+"identifier": "Color",
+"setting_type": "ColorSetting",
+"tooltip": "",
+"use_alpha": false,
+"value": Color(0, 0, 0, 1)
+},
+"My string setting": {
+"default_value": "",
+"group": "String group",
+"identifier": "My string setting",
+"setting_type": "StringSetting",
+"tooltip": "some tooltip",
+"value": ""
+},
+"Vector2i_setting": {
+"default_value": Vector2i(0, 0),
+"group": "vector2i group",
+"identifier": "Vector2i_setting",
+"max_value": Vector2i(2147483647, 2147483647),
+"min_value": Vector2i(-2147483648, -2147483648),
+"setting_type": "Vector2iSetting",
+"tooltip": "my special Vector2i setting",
+"unit": "",
+"value": Vector2i(0, 0)
+},
+"Vector3i_setting": {
+"default_value": Vector3i(0, 0, 0),
+"group": "vector3i group",
+"identifier": "Vector3i_setting",
+"max_value": Vector3i(2147483647, 2147483647, 2147483647),
+"min_value": Vector3i(-2147483648, -2147483648, -2147483648),
+"setting_type": "Vector3iSetting",
+"tooltip": "my special Vector3i setting",
+"unit": "",
+"value": Vector3i(0, 0, 0)
+},
+"Vector4i_setting": {
+"default_value": Vector4i(0, 0, 0, 0),
+"group": "vector4i group",
+"identifier": "Vector4i_setting",
+"max_value": Vector4i(2147483647, 2147483647, 2147483647, 2147483647),
+"min_value": Vector4i(-2147483648, -2147483648, -2147483648, -2147483648),
+"setting_type": "Vector4iSetting",
+"tooltip": "my special Vector4i setting",
+"unit": "",
+"value": Vector4i(0, 0, 0, 0)
+},
+"crouch": {
+"default_value_key_code": 71,
+"default_value_requires_alt": false,
+"default_value_requires_ctrl": false,
+"default_value_requires_shift": true,
+"group": "gorup 2",
+"identifier": "crouch",
+"setting_type": "KeySetting",
+"tooltip": "this key is used to crouch.",
+"value_key_code": 71,
+"value_requires_alt": false,
+"value_requires_ctrl": false,
+"value_requires_shift": true
+},
+"setting_2": {
+"default_value": 1,
+"group": "group 2",
+"identifier": "setting_2",
+"max_value": 10,
+"min_value": 0,
+"setting_type": "IntSetting",
+"tooltip": "my special int setting",
+"unit": "pcs",
+"value": 1
+},
+"setting_3": {
+"default_value": Vector2(1, 2),
+"group": "group 2",
+"identifier": "setting_3",
+"max_value": Vector2(10, 10),
+"min_value": Vector2(0, 0),
+"setting_type": "Vector2Setting",
+"tooltip": "A Vec2 setting",
+"unit": "kg",
+"value": Vector2(1, 2)
+},
+"setting_4": {
+"default_value": 0.0,
+"group": "float group",
+"identifier": "setting_4",
+"max_value": inf,
+"min_value": inf_neg,
+"setting_type": "floatSetting",
+"tooltip": "my special float setting",
+"unit": "",
+"value": 0.0
+},
+"setting_5": {
+"default_value": Vector2(0, 0),
+"group": "vector group",
+"identifier": "setting_5",
+"max_value": Vector2(inf, inf),
+"min_value": Vector2(inf_neg, inf_neg),
+"setting_type": "Vector2Setting",
+"tooltip": "my special vector2 setting",
+"unit": "",
+"value": Vector2(0, 0)
+},
+"test_setting_1": {
+"default_value": false,
+"group": "group 1",
+"identifier": "test_setting_1",
+"setting_type": "BoolSetting",
+"tooltip": "setting 1",
+"value": true
+},
+"vector3_setting": {
+"default_value": Vector3(1, 2, 3),
+"group": "vector group",
+"identifier": "vector3_setting",
+"max_value": Vector3(10, 10, 10),
+"min_value": Vector3(-10, -10, -10),
+"setting_type": "Vector3Setting",
+"tooltip": "a Vector3 setting",
+"unit": "m",
+"value": Vector3(1, 2, 3)
+},
+"vector4_setting": {
+"default_value": Vector4(1, 2, 3, 4),
+"group": "vector group",
+"identifier": "vector4_setting",
+"max_value": Vector4(10, 10, 10, 10),
+"min_value": Vector4(-10, -10, -10, -10),
+"setting_type": "Vector4Setting",
+"tooltip": "a Vector4 setting",
+"unit": "m",
+"value": Vector4(1, 2, 3, 4)
+}
+}

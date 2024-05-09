@@ -7,8 +7,7 @@ script/source = "extends AbstractSettingsPainter
 
 var _check_box:CheckBox
 
-func _init() -> void:
-	update_visuals_method = update_visuals
+
 
 func update_visuals():
 	_check_box = $ValueGroup/CheckBox
@@ -19,7 +18,7 @@ func _on_value_changed():
 	_proxy_value = _check_box.button_pressed
 "
 
-[node name="BoolSetting" instance=ExtResource("1_ro0x3")]
+[node name="BoolSettingsPainter" instance=ExtResource("1_ro0x3")]
 script = SubResource("1")
 
 [node name="CheckBox" type="CheckBox" parent="ValueGroup" index="0"]

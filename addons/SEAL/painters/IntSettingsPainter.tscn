@@ -7,8 +7,7 @@ script/source = "extends AbstractSettingsPainter
 
 var _value_box:LineEdit
 
-func _init() -> void:
-	update_visuals_method = update_visuals
+
 
 func update_visuals():
 	_value_box = $ValueGroup/ValueBox
@@ -30,7 +29,7 @@ func _on_value_box_focus_exited():
 		_value_box.text = str(_proxy_value) + setting.unit
 "
 
-[node name="IntSetting" instance=ExtResource("1_vemi5")]
+[node name="IntSettingsPainter" instance=ExtResource("1_vemi5")]
 script = SubResource("1")
 
 [node name="ValueBox" type="LineEdit" parent="ValueGroup" index="0"]

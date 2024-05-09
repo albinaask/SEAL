@@ -23,8 +23,6 @@ var _proxy_value:
 		_proxy_value = val
 		_update_visual_value()
 
-##Optional method for updating the setting's visuals 
-var update_visuals_method:=func():pass
 
 ##Optional method that is a callback for when this setting is made visible.
 var on_show_func:=func():pass
@@ -34,6 +32,7 @@ func _notification(what):
 	if what == NOTIFICATION_SORT_CHILDREN:
 		_sort_children()
 
+##Internal method called then the Panel is made visible.
 func _on_show(setting:Setting):
 	_title_label = $TitleLabel
 	_value_group = $ValueGroup
@@ -51,6 +50,7 @@ func _on_show(setting:Setting):
 	
 	on_show_func.call()
 
+##Overrides the minimum size of the control.
 func _get_minimum_size():
 		var min_size = Vector2()
 		for child in get_children():
@@ -59,6 +59,7 @@ func _get_minimum_size():
 				min_size.x = child.size.x + min_size.x
 		return Vector2(min_size.x+2*MARGIN+SCROLL_MARGIN, 2*MARGIN + max(MIN_SETTING_HEIGHT, min_size.y)/2)
 
+##sets correct alignment of children.
 func _sort_children():
 	
 	if _title_label && _value_group && _reset_button:
@@ -106,4 +107,4 @@ func _on_reset_button_pressed():
 
 func _update_visual_value():
 	_reset_button.visible = !setting.values_are_equal_method.call(_proxy_value, setting.default_value)
-	update_visuals_method.call()
+	call("update_visuals")

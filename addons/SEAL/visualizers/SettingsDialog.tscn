@@ -12,3 +12,5 @@ ok_button_text = "Accept"
 dialog_close_on_escape = false
 
 [node name="SettingsPanel" parent="." instance=ExtResource("1_bx0qr")]
+
+[connection signal="confirmed" from="." to="SettingsPanel" method="_resync_settings"]

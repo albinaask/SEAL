@@ -5,8 +5,7 @@ class_name VectorSettingsPainter
 
 var _boxes : Array[LineEdit]
 
-func _init() -> void:
-	update_visuals_method = update_visuals
+
 
 
 func _connect_boxes():

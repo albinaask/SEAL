@@ -27,16 +27,13 @@ func _ready():
 func _on_settings_dialog_confirmed() -> void:
 	#Since the method is connected to both the initial and the rerun, we only want the code to run on the first run.
 	if initial_collection:
-		##Save all the settings to disk.
+		#Save all the settings to disk.
 		initial_collection.save_to_GSON(path)
 		#Access any setting value from any part of the code as long as it is not initialized as locked.
 		#Note: The setting values are updated when the accept button is pressed, not when they are updated in the dialog.
 		print(initial_collection.test_setting_1.get_value())
 		
-		#Removing all the settings from a collection is also fine, but only settings with references in the array at the time of popup will show up in the dialog. Editing the array while the dialog is shown is not defined...
-		initial_collection.settings.clear()
-		
-		#since this is a node that is not part of the scene tree, we have to free it.
+		#Since this is a node that is not part of the scene tree, we have to free it.
 		initial_collection.queue_free()
 		#Makes a new settingsCollection from the same data, but this time settings should be locked since we have not done any type checks against a valid collection template.
 		#This can be used when we haven't loaded the settings collection, as part of a launcher or to access DLC settings without loading the any of the DLC source code.
