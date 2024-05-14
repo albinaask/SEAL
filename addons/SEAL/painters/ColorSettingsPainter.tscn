@@ -1,17 +1,18 @@
 [gd_scene load_steps=3 format=3 uid="uid://dqk151uy8jt1s"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_ypb38"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/SettingsPainter.tscn" id="1_ypb38"]
 
 [sub_resource type="GDScript" id="1"]
-script/source = "extends AbstractSettingsPainter
+script/source = "extends SettingsPainter
 
 @onready var _picker = $ValueGroup/Picker
 
-
+##Method for syncing visuals with proxy value.
 func update_visuals():
 	_picker.color = _proxy_value
 	_picker.edit_alpha = setting.use_alpha
 
+##We update the proxy value when the color is changed.
 func _on_value_changed(color:Color):
 	_proxy_value = color
 "

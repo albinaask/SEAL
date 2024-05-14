@@ -1,14 +1,20 @@
 extends RefCounted
 
-
+##This Class implements a system for storing resources as a JSON derivate called GSON, 
+##the only difference being that primitive types like the Vector2 is stored as 
+##[x,y] in JSON format, and is therefore indistinguishable from an array containing 
+##those same values, so determining the type at deserialization is therefore impossible,
+##which is unacceptable. So instead we store the vector as "Vector2(x,y)" to make the distinction.
+##The reason why this is useful is that .res & .tres files can contain malicious scripts if for example downloaded.
+##using this format that vunerability is adressed.
+##Note: NOT thread safe
 class_name GSONParser
-##NOT thread safe
 
-##valid types that are considered safe and may be serialized. 
+##Valid types that are considered safe and may be serialized. 
 ##The reason these are considered safe is that they do not contain any classes or scripts,
 ##making the file safer to share without the risk for someone injecting a script into the shared 
 ##resource that contain malicious code to alter the game behaviour or install malware.
-##Note: do not include arrays and dicts since they are only valid if all members are valid, use is_var_valid to find out...
+##Note: we don't include arrays and dicts here, since they are only valid if all members are valid, use 'validate_type' to find out...
 const valid_types = {
 		"int":TYPE_INT,
 		"float":TYPE_FLOAT,
@@ -43,12 +49,12 @@ static func save_to_GSON(path:String, dict:Dictionary):
 	Log.err_cond_not_ok(FileAccess.get_open_error(), "Couldn't open '" + path  + "'. Inside of res:// in exported build? No access? No HD space?")
 	file.store_string(save_to_string(dict))
 
-
+##Converts the passed dict to a string in GSON format.
 static func save_to_string(dict:Dictionary)->String:
 	SEAL.logger.err_cond_false(validate_type(dict), "GSONParser.save_to_string() was passed an invalid dict.")
 	return var_to_str(dict)
 
-##Check if the passed value is of a valid type for storing in GSON.
+##Method for checking if the passed value is of a valid type for storing in GSON (aka only containing types that are stored in the 'valid_types' or arrays as well as dictionaries soley consisting thereof).
 static func validate_type(val)->bool:
 	if valid_types.values().has(typeof(val)):
 		return true
@@ -70,7 +76,7 @@ static func validate_type(val)->bool:
 		return false
 
 
-##get the file containing the GSON information as a dict.
+##Read the file at the path that contains GSON information and retrun it as a dict.
 static func load_from_GSON(path:String)->Dictionary:
 	if !FileAccess.file_exists(path):
 		Log.err("Couldn't find file '" + path + "'")
@@ -78,7 +84,7 @@ static func load_from_GSON(path:String)->Dictionary:
 	return load_from_string(FileAccess.get_file_as_string(path))
 
 
-##Convert the passed text string in GSON_format to the corresponding dict
+##Convert the passed text string in GSON format to the corresponding dict.
 static func load_from_string(string)->Dictionary:
 	_current_index = 0
 	_gson_string = string
@@ -98,12 +104,14 @@ static func load_from_string(string)->Dictionary:
 static func _skip_whitespace():
 	while _current_index < _gson_string.length() && (_gson_string[_current_index] == ' ' || _gson_string[_current_index] == '\n' ||_gson_string[_current_index] == '\t' || _gson_string[_current_index] == '\r'):
 		_current_index += 1
-	#also remove comments
+	#TODO: also remove comments once implemented
 
+#parses the next value in the GSON string. The main recursive method.
 static func _parse_value() -> Variant:
 	var char = _gson_string[_current_index]
 	var identifier := ""
 	
+	#build an identifier.
 	if char == "[" || char == "{":
 		identifier = char
 	else:
@@ -112,7 +120,7 @@ static func _parse_value() -> Variant:
 			identifier += char
 			_current_index += 1
 			char = _gson_string[_current_index]
-	
+	#match the identifier to a type.
 	match identifier:
 		"null":
 			return null
@@ -120,24 +128,21 @@ static func _parse_value() -> Variant:
 			return true
 		"false":
 			return false
-		"{":
+		"{":#aka we've found an object/dict.
 			return _parse_object()
-		"[":
+		"[":#aka we've found an array
 			return _parse_array()
-		_:
-			if identifier.begins_with("\"") && identifier.ends_with("\""):
+		"inf": return INF#Godot don't like to parse these as floats by default, so we have to do it manually.
+		"inf_neg": return -INF
+		"nan": return NAN
+		_:#we can't easily parse this as a static string thing, we need to do more work.
+			if identifier.begins_with("\"") && identifier.ends_with("\""):#We've foud a string.
 				return identifier.trim_prefix("\"").trim_suffix("\"") #remove surrounding "
-			elif identifier.is_valid_int():
+			elif identifier.is_valid_int():#We've found an int.
 				return int(identifier)
-			elif identifier.is_valid_float():
+			elif identifier.is_valid_float():#We've found a float.
 				return float(identifier)
-			elif identifier == "inf":
-				return INF
-			elif identifier == "inf_neg":
-				return -INF
-			elif identifier == "nan":
-				return NAN
-			elif valid_types.keys().has(identifier):
+			elif valid_types.keys().has(identifier): #It's a basic type.
 				var data_length := 0
 				var data_str := ""
 				char = _gson_string[_current_index]
@@ -148,13 +153,13 @@ static func _parse_value() -> Variant:
 					char = _gson_string[_current_index]
 				_current_index += 1 #move past )
 				return str_to_var(identifier + data_str + ")")
-			elif ClassDB.class_exists(identifier):
+			elif ClassDB.class_exists(identifier): #It's a type that GSON doesn't allow.
 				Log.err("Non-builtin types are not permitted to store in GSON. Can't parse '" + identifier + "'")
 				return null
-			else:
+			else:#We don't know what this is.
 				Log.err("Invalid identifier: '" + identifier + "'")
 				return null
-
+#Parse a dictionary
 static func _parse_object() -> Variant:
 	_current_index += 1 # Move past opening brace
 	var obj := {}
@@ -175,6 +180,7 @@ static func _parse_object() -> Variant:
 	_current_index += 1#skipping closing brace
 	return obj
 
+#parses an array
 static func _parse_array() -> Variant:
 	_current_index += 1 # Move past opening bracket
 	var array: Array = []

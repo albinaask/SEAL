@@ -1,12 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://djultjv1qguu7"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_wlp3v"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/SettingsPainter.tscn" id="1_wlp3v"]
 
 [sub_resource type="GDScript" id="1"]
-script/source = "extends AbstractSettingsPainter
+script/source = "extends SettingsPainter
 
 
-
+##Method for syncing visuals with proxy value.
 func update_visuals():
 	if _proxy_value != $ValueGroup/ValueBox.text:#if reset
 		$ValueGroup/ValueBox.text = _proxy_value

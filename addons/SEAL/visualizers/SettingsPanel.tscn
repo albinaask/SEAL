@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bmftyc5y0aned"]
+[gd_scene load_steps=3 format=3 uid="uid://bmftyc5y0aned"]
 
 [ext_resource type="Script" path="res://addons/SEAL/visualizers/SettingsPanel.gd" id="1_4t6q3"]
+[ext_resource type="Texture2D" uid="uid://c7yc3b3whn0ao" path="res://addons/SEAL/visualizers/SearchIcon.png" id="2_fi3us"]
 
 [node name="SettingsPanel" type="VBoxContainer"]
 anchors_preset = 15
@@ -14,6 +15,11 @@ script = ExtResource("1_4t6q3")
 [node name="titleBar" type="HBoxContainer" parent="."]
 layout_mode = 2
 alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="titleBar"]
+layout_mode = 2
+texture = ExtResource("2_fi3us")
+expand_mode = 3
 
 [node name="SearchBox" type="LineEdit" parent="titleBar"]
 layout_mode = 2
@@ -29,5 +35,5 @@ show_behind_parent = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[connection signal="visibility_changed" from="." to="." method="on_made_visible"]
+[connection signal="visibility_changed" from="." to="." method="_on_panel_visibility_changed"]
 [connection signal="text_changed" from="titleBar/SearchBox" to="." method="_on_search_changed"]

@@ -68,9 +68,8 @@ func _init(identifier:String, group:String, tooltip:String, default_value, setti
 	SEAL.logger.err_cond_false(get_method_list().any(func(dict:Dictionary):return dict["name"] == "is_value_valid"), "Must have a is_value_valid method.")
 	SEAL.logger.err_cond_null(default_value, "Default value must be set in constructor.")
 	var valid = call("is_value_valid", default_value)
-	if !valid is bool:
-		SEAL.logger.fatal("is_value_valid must return bool.")
-	elif !valid:
+	assert(valid is bool, "Return of method is_value_valid must be of type bool.")
+	if !valid:
 		SEAL.logger.fatal("Default value must be valid.")
 	self.identifier = identifier
 	self._group = group
@@ -83,14 +82,14 @@ func _init(identifier:String, group:String, tooltip:String, default_value, setti
 		self.setting_type = setting_type
 	self._locked = _locked
 
-##Main method for getting the value of this setting. Should always return a valid value of the type that you expect from the setting subclass that you've inherited.
+##Main method for getting the value of this setting. Should always return a valid value of the type that you expect from the setting subclass that's inherited.
 func get_value():
 	SEAL.logger.err_cond_false(!_locked, "Setting value is locked since it is not properly validated and should not be used.")
+	assert(call("is_value_valid", _value), "Value is invalid.")
 	return _value
 
-##Main method for setting the value of this setting. Should always return a valid value of the type that you expect from the setting subclass that you've inherited.
+##Main method for setting the value of this setting. Should always return a valid value of the type that you expect from the setting subclass that's inherited.
 func set_value(val):
-	SEAL.logger.err_cond_false(!_locked, "Setting value is locked since it is not properly validated and should not be used.")
 	if call("is_value_valid", val):
 		_value = val
 	else:
@@ -115,14 +114,10 @@ func serialize_base(dict:Dictionary, serialize_value:=true)->Dictionary:
 	return dict
 
 ##Helper method for deserializing the values every setting has, meant to be called from "deserializer_method" of inherited classes
-##Note: This method cannot be called if the setting is in locked state since this is handled by the lambda passed in the static init.
 ##dict - the dictionary that should be deserialized.
 ##serialize_value - whether the value should be serialized automatically, if not, this method acts mostly as a check to see if there are any issues in the GSON.
 func deserialize_base(dict:Dictionary, serialize_value:=true)->void:
-	if _locked:
-		SEAL.logger.err("This method can only be used when setting is validated")
-		return
-	if !_check_types_in_settings_dict(identifier, dict):
+	if !check_types_in_settings_dict(dict):
 		SEAL.logger.info("Setting had type issues, skipping deserialization")
 		return
 	if dict["identifier"] != identifier:
@@ -138,25 +133,26 @@ func deserialize_base(dict:Dictionary, serialize_value:=true)->void:
 		SEAL.logger.warn("Serialized setting with name '" + identifier + "' has a default value that differs from the preset. Using predefined value.")
 		return
 	if serialize_value:
-		_value = dict["value"]
+		set_value(dict["value"])
 
-#Internal Method that checks that core values in the passed dict that adheres to the standard set in the serialization API is present and of right type.
-static func _check_types_in_settings_dict(setting_name:String, dict:Dictionary)->bool:
-	if !_parameter_is_valid(dict, "identifier", TYPE_STRING, setting_name):
+##Method that checks that core values in the passed dict that adheres to the standard set in the serialization API is present and of right type.
+static func check_types_in_settings_dict(dict:Dictionary)->bool:
+	if !parameter_is_valid(dict, "identifier", TYPE_STRING, "?"):
 		return false
-	if !_parameter_is_valid(dict, "group", TYPE_STRING, setting_name):
+	if !parameter_is_valid(dict, "group", TYPE_STRING, dict["identifier"]):
 		return false
-	if !_parameter_is_valid(dict, "setting_type", TYPE_STRING, setting_name):
+	if !parameter_is_valid(dict, "setting_type", TYPE_STRING, dict["identifier"]):
 		return false
 	##Can't check value and default value since not all setting types have those...
 	return true
 
-static func _parameter_is_valid(dict:Dictionary, param_name:String, value_type:Variant.Type, setting_name:String)->bool:
+##Method that checks if the parameter exists, and is valid, and if not, logs a warning.
+static func parameter_is_valid(dict:Dictionary, param_name:String, value_type:Variant.Type, identifier:String)->bool:
 	if !dict.has(param_name):
-		SEAL.logger.warn("Serialized setting with name '" + setting_name + "' didn't have key '" + param_name + "'")
+		SEAL.logger.warn("Serialized setting with name '" + identifier + "' didn't have key '" + param_name + "'")
 		return false
 	elif typeof(dict[param_name]) != value_type:
-		SEAL.logger.warn("Serialized setting with name '" + setting_name + "' has an invalid value type of the '" + param_name + "' parameter.")
+		SEAL.logger.warn("Serialized setting with name '" + identifier + "' has an invalid value type of the '" + param_name + "' parameter.")
 		return false
 	else:
 		return true

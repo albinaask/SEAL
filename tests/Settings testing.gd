@@ -26,7 +26,7 @@ func _ready():
 ##Method that is connected to the accept signal of the dialog. Not part of the addon API and you may omit this entirely. 
 func _on_settings_dialog_confirmed() -> void:
 	#Since the method is connected to both the initial and the rerun, we only want the code to run on the first run.
-	if initial_collection:
+	if settings_panel.settings_collection == initial_collection:
 		#Save all the settings to disk.
 		initial_collection.save_to_GSON(path)
 		#Access any setting value from any part of the code as long as it is not initialized as locked.
@@ -43,7 +43,7 @@ func _on_settings_dialog_confirmed() -> void:
 		$SettingsDialog.popup_centered()
 	else:
 		#When we press accept second time in the test, instead land here.
-		##Remove the test file.
+		#Remove the test file.
 		DirAccess.remove_absolute(path)
 		#We can't use this like the other because this collection is just made from the GSON and we don not know if someone has put in incorrect values.
 		#AKA, an error here equals sucess!
@@ -91,5 +91,6 @@ class TestSettingCollection extends SettingsCollection:
 		def_key.keycode = KEY_G
 		def_key.shift_pressed = true
 		add_setting(KeySetting.new("crouch", "gorup 2", "this key is used to crouch.", def_key))
+		add_setting(MultiChoiceSetting.new("Multi choice", "group 2", "this is a multi choice setting", "one", ["one", "two", "three"]))
 
 

@@ -1,19 +1,19 @@
 [gd_scene load_steps=3 format=3 uid="uid://bhk4qyf0kgrwe"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_vemi5"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/SettingsPainter.tscn" id="1_vemi5"]
 
 [sub_resource type="GDScript" id="1"]
-script/source = "extends AbstractSettingsPainter
+script/source = "extends SettingsPainter
 
 var _value_box:LineEdit
 
 
-
+##Method for syncing visuals with proxy value.
 func update_visuals():
 	_value_box = $ValueGroup/ValueBox
 	_value_box.text = str(_proxy_value) + setting.unit
 
-
+##Update the proxy value when the text is changed to a valid int + some intermedidary values.
 func _on_value_changed(new_text):
 	var trimmed = new_text.trim_suffix(setting.unit)
 	var c_pos = _value_box.caret_column
@@ -24,6 +24,7 @@ func _on_value_changed(new_text):
 		_value_box.text = _proxy_value
 	_value_box.caret_column = min(_value_box.text.length(), c_pos)
 
+##If the text is not a valid int, reset the text to the (old) proxy value.
 func _on_value_box_focus_exited():
 	if !_value_box.text.is_valid_int():
 		_value_box.text = str(_proxy_value) + setting.unit

@@ -1,32 +1,31 @@
 extends ConfirmationDialog
 
-var packed_settings_panel:PackedScene = load("res://legacy/settings/OWLSettingsPanel.tscn")
+var packed_settings_panel:PackedScene = load("res://addons/SEAL/visualizers/SettingsPanel.tscn")
 
-##This is done deferred since if the loading is done async, this signal may come
-##before this is inside the scene tree and therefore crash.
-func _preload_settings_panel():
-	var c = func():
-		pass
-		#for mod in OWLWorldLoader.mod_loaders:
-		#	var settings_panel = packed_settings_panel.instantiate()
-		#	if mod.has_method(settings_panel.registry_method_name):
-		#		settings_panel.name = mod.mod_info.name
-		#		$TabContainer.add_child(settings_panel)
-		#		settings_panel.settings_dict_property_name = "mod_settings"
-		#		settings_panel.API_object = mod
-		#		_mod_settings_panels.append(settings_panel)
-	c.call_deferred()
+#Stores all the panels.
+var _panels:Dictionary = {}
 
-func _on_visibility_changed():
-	if visible:
-		$"TabContainer/Global Settings".on_made_visible()
-		for mod_settings_panel in _mod_settings_panels:
-			mod_settings_panel.on_made_visible()
+## Adds a collection to the dialog with the given name.
+func add_settings_collection(name:String, settings_collection:SettingsCollection):
+	var panel:SettingsPanel = packed_settings_panel.instantiate()
+	panel.name = tr(name)
+	panel.settings_collection = settings_collection
+	_panels[settings_collection] = panel
+	$TabContainer.add_child(panel)
 
+##Resyncs setting values of all the panels. Connected to the dialog's confirm button.
+func _on_confirmed() -> void:
+	for panel:SettingsPanel in _panels.values():
+		panel._resync_settings()
 
-func _on_accept_button_pressed():
-	visible = false
-	#loop through all children but the first (global_settings)
-	for settings_tab in $TabContainer.get_children():
-		settings_tab.update_settings_array()
-		settings_tab.API_object.call(settings_tab.save_method_name)
+## Removes a collection from the dialog.
+func remove_collection(collection:SettingsCollection) -> void:
+	var panel = _panels[collection]
+	_panels.erase(collection)
+	$TabContainer.remove_child(panel)
+	panel.queue_free()
+
+## Removes all the collections from the dialog.
+func clear_collections() -> void:
+	for collection:SettingsCollection in _panels.keys():
+		remove_collection(collection)

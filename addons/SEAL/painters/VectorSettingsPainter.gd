@@ -1,4 +1,4 @@
-extends AbstractSettingsPainter
+extends SettingsPainter
 
 
 class_name VectorSettingsPainter

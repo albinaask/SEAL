@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://ne65bxa7ia7"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_fymy3"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/SettingsPainter.tscn" id="1_fymy3"]
 
 [sub_resource type="GDScript" id="1"]
 script/source = "extends VectorFSettingsPainter
 
-
+#Logic is handled by the parent classes.
 func _ready() -> void:
 	_boxes = [$ValueGroup/Vec/XBox, $ValueGroup/Vec/YBox, $ValueGroup/Vec/ZBox, $ValueGroup/Vec/WBox]
 	_connect_boxes()

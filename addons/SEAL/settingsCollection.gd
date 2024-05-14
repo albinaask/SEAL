@@ -51,12 +51,18 @@ static func create_locked_collection_from_dict(dict:Dictionary)->SettingsCollect
 		if !raw_setting is Dictionary:
 			SEAL.logger.err("Serialized setting was not of type Dictionary. Skipping.")
 			continue
-		if !Setting._check_types_in_settings_dict(key, raw_setting):
+		if !Setting.check_types_in_settings_dict(raw_setting):
 			continue
 		
 		var type:String = raw_setting["setting_type"]
-		
-		settings_collection.add_setting(Setting.create_locked_collection_from_GSON_methods[type].call(raw_setting))
+		var setting = Setting.create_locked_collection_from_GSON_methods[type].call(raw_setting)
+		#We allow null return if setting is invalid.
+		if setting != null && setting is Setting:
+			settings_collection.add_setting(setting)
+	
+	#We load the settings' values.
+	settings_collection.deserialize(dict)
+	
 	return settings_collection
 
 

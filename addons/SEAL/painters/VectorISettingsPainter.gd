@@ -3,7 +3,7 @@ extends VectorSettingsPainter
 
 class_name VectorISettingsPainter
 
-
+#Same as in the IntSettingsPainter, but we take the inde of the vector.
 func _on_value_changed(new_text:String, index:int):
 	var trimmed = new_text.trim_suffix(setting.unit)
 	var box = _boxes[index]
@@ -18,7 +18,7 @@ func _on_value_changed(new_text:String, index:int):
 	box.caret_column = min(box.text.length(), c_pos)
 
 
-
+#Same as in the IntSettingsPainter, but we take the inde of the vector.
 func _on_value_box_focus_exited(index):
 	var box := _boxes[index]
 	if !box.text.trim_suffix(setting.unit).is_valid_int():

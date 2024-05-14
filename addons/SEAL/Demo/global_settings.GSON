@@ -1,0 +1,50 @@
+{
+"Debanding": {
+"default_value": false,
+"group": "Graphics",
+"identifier": "Debanding",
+"setting_type": "BoolSetting",
+"tooltip": "Debanding can be turned on to alleviate color bands, but may cause artefacts so is only recommended if accually needed.",
+"value": false
+},
+"Render method": {
+"allowed_values": Array[String](["Forward+", "Compatability", "Mobile"]),
+"default_value": "Forward+",
+"group": "Graphics",
+"identifier": "Render method",
+"setting_type": "MultiChoiceSetting",
+"tooltip": "Which render engine to use, Forward+ is a modern, Vulkan based engine capable of better graphics, has more features and is more optimized for mdoern graphics cards. Compatability is an engine that is meant for older devices without vulkan support. Mobile is a Vulkan based render engine that is meant for mobile devices.",
+"value": "Forward+"
+},
+"V-Sync": {
+"default_value": false,
+"group": "Graphics",
+"identifier": "V-Sync",
+"setting_type": "BoolSetting",
+"tooltip": "Controls whether the game uses V-Sync.",
+"value": false
+},
+"Window mode": {
+"allowed_values": Array[String](["Fullscreen", "Windowed", "Borderless window"]),
+"default_value": "Windowed",
+"group": "Window",
+"identifier": "Window mode",
+"setting_type": "MultiChoiceSetting",
+"tooltip": "Controls the window mode.",
+"value": "Windowed"
+},
+"dialog_key": {
+"default_value_key_code": 4194305,
+"default_value_requires_alt": false,
+"default_value_requires_ctrl": false,
+"default_value_requires_shift": false,
+"group": "Input",
+"identifier": "dialog_key",
+"setting_type": "KeySetting",
+"tooltip": "The key used to open the dialog.",
+"value_key_code": 4194305,
+"value_requires_alt": false,
+"value_requires_ctrl": false,
+"value_requires_shift": false
+}
+}

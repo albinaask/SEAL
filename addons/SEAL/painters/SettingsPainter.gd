@@ -1,7 +1,7 @@
 extends PanelContainer
 
-class_name AbstractSettingsPainter
-##this class is not to be added to the tree by itself, but should instead be inherited by scenes that are derivetives from AbstractSettingsPainter.tscn, see IntSettingsPainter.tscn for reference.
+##this class does nothing when added to the tree by itself, but should instead be inherited by scenes that are derivetives from SettingsPainter.tscn, see IntSettingsPainter.tscn for reference.
+class_name SettingsPainter
 
 ##Minimum height of the setting, used so the settings dont shrink to just covering the text and looking weird.
 const MIN_SETTING_HEIGHT = 40
@@ -10,13 +10,16 @@ const MARGIN = 0
 ##Add some extra space for the scroll bar 
 const SCROLL_MARGIN = 10
 
-#internals for referencing nodes.
+#Internals for referencing nodes.
 var _title_label : Label
 var _value_group : Control
 var _reset_button : Button
 
+##The setting that is linked to this painter. The type depends on the type of the painter. A BoolSettingsPainter contains a BoolSetting etc.
 var setting:Setting
 
+
+##Since the setting value is set upon clicking the 'confirm' buton in the dialog, the value that the setting should take at that time is stored as an intermediary value here.
 var _proxy_value:
 	set(val):
 		SEAL.logger.err_cond_false(setting.call("is_value_valid", val), "Proxy values must be valid setting values.")
@@ -32,12 +35,13 @@ func _notification(what):
 	if what == NOTIFICATION_SORT_CHILDREN:
 		_sort_children()
 
-##Internal method called then the Panel is made visible.
+##Internal method called when the Panel is made visible. Should be connected to the "on_show" signal of the dialog or the like.
 func _on_show(setting:Setting):
 	_title_label = $TitleLabel
 	_value_group = $ValueGroup
 	_reset_button = $ResetButton
 	self.setting = setting
+	#Make sure we update the visual value if the setting value is updated while the dialog is shown.
 	if !setting.on_setting_changed.is_connected(_update_visual_value):
 		setting.on_setting_changed.connect(_update_visual_value)
 	
@@ -50,6 +54,11 @@ func _on_show(setting:Setting):
 	
 	on_show_func.call()
 
+#Clean the signal connection.
+func _exit_tree() -> void:
+	if setting && setting.on_setting_changed.is_connected(_update_visual_value):
+		setting.on_setting_changed.disconnect(_update_visual_value)
+
 ##Overrides the minimum size of the control.
 func _get_minimum_size():
 		var min_size = Vector2()
@@ -59,7 +68,7 @@ func _get_minimum_size():
 				min_size.x = child.size.x + min_size.x
 		return Vector2(min_size.x+2*MARGIN+SCROLL_MARGIN, 2*MARGIN + max(MIN_SETTING_HEIGHT, min_size.y)/2)
 
-##sets correct alignment of children.
+#Set correct positions of children.
 func _sort_children():
 	
 	if _title_label && _value_group && _reset_button:
@@ -100,11 +109,11 @@ func _sort_children():
 		_value_group.size_flags_horizontal = SIZE_EXPAND_FILL
 		_value_group.size_flags_vertical = SIZE_EXPAND_FILL
 
-
+#Connected to the reset button.pressed signal. triggers the setting to reset to its default value and therefore the reset button to be hidden.
 func _on_reset_button_pressed():
 	_proxy_value = setting.default_value
 
-
+#Internal method for syncing the state of the reset button to the proxy value.
 func _update_visual_value():
 	_reset_button.visible = !setting.values_are_equal_method.call(_proxy_value, setting.default_value)
 	call("update_visuals")

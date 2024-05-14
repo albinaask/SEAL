@@ -13,4 +13,5 @@ offset_top = 5.0
 offset_right = 858.0
 offset_bottom = 481.0
 
+[connection signal="confirmed" from="." to="." method="_on_confirmed"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

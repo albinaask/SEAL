@@ -9,21 +9,25 @@ const _TYPE = "IntSetting"
 const BOUNDS = 1e8
 
 ##Max valid setting value this setting can have, set in the constructor. If not, this is just set to BOUNDS.
-var max_value:=0:
+var max_value:=BOUNDS:
 	set(val):
+		assert(val >= min_value)
 		max_value = val
 		if _value != null:
 			_value = clampi(_value, min_value, max_value)
+
 ##Max valid setting value this setting can have, set in the constructor. If not, this is just set to -BOUNDS.
-var min_value:=0:
+var min_value:=-BOUNDS:
 	set(val):
+		assert(val <= max_value)
 		min_value = val
 		if _value != null:
 			_value = clampi(_value, min_value, max_value)
+
 ##Can be any string and is shown as a suffix of this setting in the dialog.
 var unit:String
 
-##static constructor, runs before the normal constructor.
+#Refer to readme.md under the 'Advanced topics/making custom setting types/The setting' for an explanation of this madness.
 static func _static_init() -> void:
 	#All settings provide a similar lambda as part of the settings API. We link the setting type to a Packed scene that can be instansiated to show the setting in the dialog.
 	create_locked_collection_from_GSON_methods[_TYPE] = func(raw_setting:Dictionary)->IntSetting:
@@ -38,7 +42,7 @@ func _init(identifier:String, _group:String, tooltip:String, default_value:=0, m
 	self.unit = unit
 	super(identifier, _group, tooltip, default_value, _TYPE, _locked)
 
-##API method that must be overridden in subclasses. Hands a reference to the settings painter scene corresponding to the setting type.
+#Supply an IntSettingsPainter scene that will be used to paint this setting.
 func get_settings_painter_scene():
 	return load("res://addons/SEAL/painters/IntSettingsPainter.tscn")
 
@@ -51,6 +55,7 @@ func is_value_valid(val)->bool:
 ##API method that serializes this setting into a dictionary which can be passed to the GSON parser to be stored on disk.
 func serialize()->Dictionary:
 	var dict  = {}
+	#The extra parameters are added to the storage dictionary.
 	dict["max_value"] = max_value
 	dict["min_value"] = min_value
 	dict["unit"] = unit
@@ -58,7 +63,4 @@ func serialize()->Dictionary:
 
 ##Deserializes the setting values from the supplied dictionary. This method is used when the setting is created normally, and not as part of the SettingsCollection.create_locked_collection_from_GSON([path]). 
 func deserialize(dict:Dictionary)->void:
-	max_value = dict["max_value"] if dict["max_value"] is int else BOUNDS
-	min_value = dict["min_value"] if dict["min_value"] is int else -BOUNDS
-	unit = dict["unit"] if dict["unit"] is String else ""
 	deserialize_base(dict)

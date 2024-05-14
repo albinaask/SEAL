@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://vb11dj5l6hmb"]
+
+[ext_resource type="PackedScene" uid="uid://hbgtns12ds5m" path="res://addons/SEAL/visualizers/MultiSettingsDialog.tscn" id="1_ho8s0"]
+
+[sub_resource type="GDScript" id="GDScript_yxb50"]
+script/source = "extends \"res://addons/SEAL/visualizers/MultiSettingsDialog.gd\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	
+	var coll_1 = SettingsCollection.new()
+	coll_1.add_setting(BoolSetting.new(\"test_setting_1\", \"group_1\", \"my_tooltip\"))
+	
+	var coll_2 = SettingsCollection.new()
+	coll_2.add_setting(IntSetting.new(\"test_setting_2\", \"group_2\", \"my_tooltip\"))
+	
+	add_settings_collection(\"Collection 1\", coll_1)
+	add_settings_collection(\"Collection 2\", coll_2)
+	popup_centered()
+"
+
+[node name="MultiSettingsDialog" instance=ExtResource("1_ho8s0")]
+script = SubResource("GDScript_yxb50")

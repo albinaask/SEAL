@@ -1,19 +1,18 @@
 [gd_scene load_steps=3 format=3 uid="uid://crjgkx0j4f6sd"]
 
-[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/AbstractSettingsPainter.tscn" id="1_ro0x3"]
+[ext_resource type="PackedScene" uid="uid://bh8x54mstorgq" path="res://addons/SEAL/painters/SettingsPainter.tscn" id="1_ro0x3"]
 
 [sub_resource type="GDScript" id="1"]
-script/source = "extends AbstractSettingsPainter
+script/source = "extends SettingsPainter
 
 var _check_box:CheckBox
 
 
-
+##Method for syncing visuals with proxy value.
 func update_visuals():
 	_check_box = $ValueGroup/CheckBox
 	_check_box.button_pressed = _proxy_value
-
-
+##We update the proxy value when the check box is pressed.
 func _on_value_changed():
 	_proxy_value = _check_box.button_pressed
 "

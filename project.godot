@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Log="*res://addons/logger/logger.gd"
 SEAL="*res://addons/SEAL/SEAL.gd"
+GlobalSettings="*res://addons/SEAL/Demo/GlobalSettings.gd"
 
 [editor_plugins]
 
