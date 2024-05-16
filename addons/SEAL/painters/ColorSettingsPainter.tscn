@@ -5,10 +5,11 @@
 [sub_resource type="GDScript" id="1"]
 script/source = "extends SettingsPainter
 
-@onready var _picker = $ValueGroup/Picker
+var _picker
 
 ##Method for syncing visuals with proxy value.
 func update_visuals():
+	_picker = $ValueGroup/Picker
 	_picker.color = _proxy_value
 	_picker.edit_alpha = setting.use_alpha
 

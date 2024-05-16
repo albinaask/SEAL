@@ -31,23 +31,29 @@ func _ready():
 func _on_panel_visibility_changed():
 	assert(settings_collection)
 	if is_inside_tree() && is_visible_in_tree():#fire only if made visible and in scene tree
+		var start = Time.get_ticks_msec()
 		for child in _setting_container.get_children():
 			_setting_container.remove_child(child)
 		_group_button_dict.clear()
 		_group_settings_dict.clear()
-		
+		print("removed at: " + str(Time.get_ticks_msec()-start))
 		var settings_dict = settings_collection._settings
-		for setting in settings_dict.values():
+		for setting:Setting in settings_dict.values():
+			var start_setting = Time.get_ticks_msec()
 			var group_name:String = setting._group
 			if !_group_settings_dict.keys().has(group_name):
 				_add_group(group_name)
 			var settings_painter:SettingsPainter = setting.get_settings_painter_scene().instantiate()
 			_group_settings_dict[group_name].append(settings_painter)
+			
 			_setting_container.add_child(settings_painter)
 			settings_painter._on_show(setting)
-
-		#initially sync the visuals.	
+			print("setting end at: " + str(Time.get_ticks_msec()-start_setting))
+		print("ended for at: " + str(Time.get_ticks_msec()-start))
+		#initially sync the visuals.
 		_update_visuals()
+		print("end at: " + str(Time.get_ticks_msec()-start))
+
 
 ##Internal method for adding a new group, adds a button that controls the visibility of the settings that are connected to this group.
 func _add_group(group_name:String):

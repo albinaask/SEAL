@@ -31,9 +31,10 @@ var _proxy_value:
 var on_show_func:=func():pass
 
 
-func _notification(what):
-	if what == NOTIFICATION_SORT_CHILDREN:
-		_sort_children()
+func _init():
+	#Why the fuck is it run twice per object???
+	if !sort_children.is_connected(_sort_children):
+		sort_children.connect(_sort_children)
 
 ##Internal method called when the Panel is made visible. Should be connected to the "on_show" signal of the dialog or the like.
 func _on_show(setting:Setting):
@@ -70,7 +71,6 @@ func _get_minimum_size():
 
 #Set correct positions of children.
 func _sort_children():
-	
 	if _title_label && _value_group && _reset_button:
 		_title_label.anchor_left = 0
 		_title_label.anchor_right = 0.5

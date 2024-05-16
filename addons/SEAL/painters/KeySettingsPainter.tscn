@@ -8,10 +8,10 @@
 [sub_resource type="GDScript" id="1"]
 script/source = "extends SettingsPainter
 
-@onready var _button:Button = $ValueGroup/VBoxContainer/Button
-@onready var _shift_icon:TextureRect = $ValueGroup/VBoxContainer/HBoxContainer/ShiftIcon
-@onready var _control_icon:TextureRect = $ValueGroup/VBoxContainer/HBoxContainer/CtrlIcon
-@onready var _alt_icon:TextureRect = $ValueGroup/VBoxContainer/HBoxContainer/AltIcon
+var _button:Button
+var _shift_icon:TextureRect
+var _control_icon:TextureRect
+var _alt_icon:TextureRect
 
 const _modifier_enabled_color := Color.WHITE
 const _modifier_disabled_color := Color.DARK_GRAY
@@ -29,6 +29,10 @@ func _on_button_toggled(_pressed:bool):
 
 
 func update_visuals():
+	_button = $ValueGroup/VBoxContainer/Button
+	_shift_icon = $ValueGroup/VBoxContainer/HBoxContainer/ShiftIcon
+	_control_icon = $ValueGroup/VBoxContainer/HBoxContainer/CtrlIcon
+	_alt_icon = $ValueGroup/VBoxContainer/HBoxContainer/AltIcon
 	if !_button.button_pressed && _proxy_value.keycode == KEY_NONE: #AKA not recording presses and not having any value, AKA key is disabled.
 		_button.text = tr(\"None\")
 		_shift_icon.tooltip_text = tr(\"N/A\")
