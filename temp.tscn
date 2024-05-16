@@ -1,18 +1,30 @@
-[gd_scene load_steps=2 format=3 uid="uid://diwikkiy5nyiy"]
+[gd_scene load_steps=2 format=3 uid="uid://71jcq7ptjedo"]
 
 [sub_resource type="GDScript" id="GDScript_scfd5"]
 script/source = "extends Node
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	var node = Node.new()
+func _input(event):
+	if event is InputEventKey && event.keycode == KEY_ESCAPE:
+		foo()
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+
+
+func foo() -> void:
+	print(\"foo\")
+	var painter = preload(\"res://addons/SEAL/painters/BoolSettingsPainter.tscn\")
+	var start = Time.get_ticks_msec()
+	$ScrollContainer.add_child(painter.instantiate())
+	print(\"end at: \" + str(Time.get_ticks_msec()-start))
 "
 
 [node name="Node" type="Node"]
 script = SubResource("GDScript_scfd5")
+
+[node name="ScrollContainer" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -9,14 +9,11 @@ func _input(event):
 
 #Note that SEAL doesn't care how or when this is called, pressing the escape button is just an example.
 func show_settings():
-	#We may preload it, load it on demand or make derived classes in code, SEAL doesn't care.
-	var settings_dialog_scene = load(\"res://addons/SEAL/visualizers/SettingsDialog.tscn\")
+	var settings_dialog_scene = preload(\"res://addons/SEAL/visualizers/SettingsDialog.tscn\")
 	var settings_dialog:ConfirmationDialog = settings_dialog_scene.instantiate()
-	#We can keep it in the tree whenever whereever, it's completely inert until we call popup.
 	add_child(settings_dialog)
-	#We specify the collection we want it to show before we call popup
+	
 	settings_dialog.get_node(\"SettingsPanel\").settings_collection = GlobalSettings
-	#Since this is a normal Confirmation dialog we can call any popup like command.
 	settings_dialog.popup_centered()
 "
 

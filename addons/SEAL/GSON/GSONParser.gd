@@ -112,14 +112,20 @@ static func _parse_value() -> Variant:
 	var identifier := ""
 	
 	#build an identifier.
-	if char == "[" || char == "{":
+	if char == "[" || char == "{": #AKA object or array
 		identifier = char
-	else:
-		var allowed_special_chars = ["\"", "-", ".", "_", " "]
-		while (char>="A" && char<="Z") || (char>="a" && char<="z") || (char>="0" && char<="9") || allowed_special_chars.has(char):
+	elif char == "\"": #AKA string
+		while true:
 			identifier += char
 			_current_index += 1
 			char = _gson_string[_current_index]
+			if char == "\"":
+				identifier += char
+				_current_index += 1
+				break
+	else:#AKA anything else
+		identifier = _parse_identifier()
+	
 	#match the identifier to a type.
 	match identifier:
 		"null":
@@ -135,8 +141,9 @@ static func _parse_value() -> Variant:
 		"inf": return INF#Godot don't like to parse these as floats by default, so we have to do it manually.
 		"inf_neg": return -INF
 		"nan": return NAN
+		"Array": return _parse_typed_array()
 		_:#we can't easily parse this as a static string thing, we need to do more work.
-			if identifier.begins_with("\"") && identifier.ends_with("\""):#We've foud a string.
+			if identifier.begins_with("\"") && identifier.ends_with("\""):#We've found a string.
 				return identifier.trim_prefix("\"").trim_suffix("\"") #remove surrounding "
 			elif identifier.is_valid_int():#We've found an int.
 				return int(identifier)
@@ -159,8 +166,20 @@ static func _parse_value() -> Variant:
 			else:#We don't know what this is.
 				Log.err("Invalid identifier: '" + identifier + "'")
 				return null
-#Parse a dictionary
-static func _parse_object() -> Variant:
+
+
+static func _parse_identifier() -> String:
+	var char = _gson_string[_current_index]
+	var identifier := ""
+	while (char>="A" && char<="Z") || (char>="a" && char<="z") || (char>="0" && char<="9") || char == "-" || char == "_" || char == ".":
+		identifier += char
+		_current_index += 1
+		char = _gson_string[_current_index]
+	return identifier
+
+
+#Parses a dictionary.
+static func _parse_object() -> Dictionary:
 	_current_index += 1 # Move past opening brace
 	var obj := {}
 	while _gson_string[_current_index] != "}":
@@ -180,8 +199,8 @@ static func _parse_object() -> Variant:
 	_current_index += 1#skipping closing brace
 	return obj
 
-#parses an array
-static func _parse_array() -> Variant:
+#Parses an array.
+static func _parse_array() -> Array:
 	_current_index += 1 # Move past opening bracket
 	var array: Array = []
 	while _gson_string[_current_index] != "]":
@@ -192,4 +211,19 @@ static func _parse_array() -> Variant:
 		if _gson_string[_current_index] == ",":
 			_current_index += 1 # Move past comma
 	_current_index += 1 # Move past closing bracket
+	return array
+
+#Parses a typed array.
+static func _parse_typed_array() -> Array:
+	_current_index += 1#Move past '['
+	var array_type = _parse_identifier()
+	_current_index += 1#Move past ']'
+	_current_index += 1#Move past '('
+	var array = _parse_array()
+	_current_index += 1#Move past ')'
+	
+	for obj in array:
+		if !valid_types.values().has(typeof(obj)):
+			Log.err("Invalid type in typed array: " + str(obj))
+			array.erase(obj)
 	return array
