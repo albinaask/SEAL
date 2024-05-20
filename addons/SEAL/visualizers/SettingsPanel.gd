@@ -31,15 +31,12 @@ func _ready():
 func _on_panel_visibility_changed():
 	assert(settings_collection)
 	if is_inside_tree() && is_visible_in_tree():#fire only if made visible and in scene tree
-		var start = Time.get_ticks_msec()
 		for child in _setting_container.get_children():
 			_setting_container.remove_child(child)
 		_group_button_dict.clear()
 		_group_settings_dict.clear()
-		print("removed at: " + str(Time.get_ticks_msec()-start))
 		var settings_dict = settings_collection._settings
 		for setting:Setting in settings_dict.values():
-			var start_setting = Time.get_ticks_msec()
 			var group_name:String = setting._group
 			if !_group_settings_dict.keys().has(group_name):
 				_add_group(group_name)
@@ -48,11 +45,8 @@ func _on_panel_visibility_changed():
 			
 			_setting_container.add_child(settings_painter)
 			settings_painter._on_show(setting)
-			print("setting end at: " + str(Time.get_ticks_msec()-start_setting))
-		print("ended for at: " + str(Time.get_ticks_msec()-start))
 		#initially sync the visuals.
 		_update_visuals()
-		print("end at: " + str(Time.get_ticks_msec()-start))
 
 
 ##Internal method for adding a new group, adds a button that controls the visibility of the settings that are connected to this group.
@@ -84,14 +78,25 @@ func _on_group_button_pressed(button:Button):
 func _update_visuals():
 	_setting_container.size.x = size.x
 	var search_term = _search_box.text
+	var min_size_x = 0
 	for group_name in _group_settings_dict:
 		var match_group_name = group_name.count(search_term)>0
 		var has_matching_setting = false
 		for settings_painter:SettingsPainter in _group_settings_dict[group_name]:
 			settings_painter.visible = search_term == "" || match_group_name || settings_painter.setting.identifier.count(search_term)>0
 			has_matching_setting = true
+			min_size_x = max(min_size_x, settings_painter.get_combined_minimum_size().x)
 		_group_button_dict[group_name].visible = match_group_name || search_term == ""
+	if is_inside_tree():
+		_update_min_size.call_deferred()
 
+
+func _update_min_size():
+	var min_size_x = 0
+	for child in get_children():
+		if child is Control:
+			min_size_x = max(min_size_x, child.get_combined_minimum_size().x)
+	$SettingsPane/VBoxContainer.custom_minimum_size.x = min_size_x
 
 ##Internal method connected to when the text in the search box is changed.
 func _on_search_changed(_new_text):
