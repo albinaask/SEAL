@@ -5,8 +5,6 @@ class_name SettingsPainter
 
 ##Minimum height of the setting, used so the settings dont shrink to just covering the text and looking weird.
 const MIN_SETTING_HEIGHT = 40
-##Margin between the contence and the other elements.
-const MARGIN = 10
 ##Add some extra space for the scroll bar 
 const SCROLL_MARGIN = 10
 
@@ -18,6 +16,7 @@ var _reset_button : Button
 ##The setting that is linked to this painter. The type depends on the type of the painter. A BoolSettingsPainter contains a BoolSetting etc.
 var setting:Setting
 
+var settings_panel:SettingsPanel
 
 ##Since the setting value is set upon clicking the 'confirm' buton in the dialog, the value that the setting should take at that time is stored as an intermediary value here.
 var _proxy_value:
@@ -61,17 +60,21 @@ func _exit_tree() -> void:
 
 func _get_minimum_size() -> Vector2:
 	var min_size = Vector2()
+	var margin = settings_panel.margin if settings_panel != null else 10
 	for child in get_children():
 		if child is Control:
 			var child_size = child.get_combined_minimum_size()
 			min_size.y = max(child_size.y, min_size.y)
 			min_size.x += child_size.x + abs(child.offset_left) + abs(child.offset_right)
-	return Vector2(min_size.x+2*MARGIN+SCROLL_MARGIN, 2*MARGIN + max(MIN_SETTING_HEIGHT, min_size.y))
+	return Vector2(min_size.x+2*margin+SCROLL_MARGIN, 2*margin + max(MIN_SETTING_HEIGHT, min_size.y))
 
 
 #Set correct positions of children.
 func _sort_children():
+	assert(settings_panel, "Settings panel not set, must be set befoere added to tree.")
 	if _title_label && _value_group && _reset_button:
+		var margin = settings_panel.margin
+
 		_title_label.anchor_left = 0
 		_title_label.anchor_right = 0.5
 		_title_label.anchor_top = 0
@@ -81,10 +84,10 @@ func _sort_children():
 		_title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		_title_label.size_flags_horizontal = SIZE_EXPAND_FILL
 		_title_label.size_flags_vertical = SIZE_EXPAND_FILL
-		_title_label.offset_left = MARGIN
+		_title_label.offset_left = margin
 		_title_label.offset_right = - MIN_SETTING_HEIGHT
-		_title_label.offset_top = MARGIN
-		_title_label.offset_bottom = -MARGIN
+		_title_label.offset_top = margin
+		_title_label.offset_bottom = -margin
 		
 		_reset_button.anchor_left = 0.5
 		_reset_button.anchor_right = 0.5
@@ -103,13 +106,9 @@ func _sort_children():
 		_value_group.anchor_top = 0
 		
 		_value_group.offset_left = 0
-		_value_group.offset_right = -MARGIN
-		_value_group.offset_top = MARGIN
-		_value_group.offset_bottom = -MARGIN
-		
-		
-		#_value_group.size_flags_horizontal = SIZE_EXPAND_FILL
-		#_value_group.size_flags_vertical = SIZE_EXPAND_FILL
+		_value_group.offset_right = -margin
+		_value_group.offset_top = margin
+		_value_group.offset_bottom = -margin
 
 #Connected to the reset button.pressed signal. triggers the setting to reset to its default value and therefore the reset button to be hidden.
 func _on_reset_button_pressed():
