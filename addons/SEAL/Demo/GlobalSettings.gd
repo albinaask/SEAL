@@ -1,5 +1,7 @@
 extends SettingsCollection
 
+const _PATH = "res://addons/SEAL/Demo/global_settings.GSON"
+
 #Even though Godot can be set to more values than true or false for V-Sync, this demo only handles true and false.
 var v_sync_setting = BoolSetting.new("V-Sync", "Graphics", "Controls whether the game uses V-Sync.")
 var window_mode_setting = MultiChoiceSetting.new("Window mode", "Window", "Controls the window mode.", "Windowed", ["Fullscreen", "Windowed", "Borderless window"])
@@ -8,7 +10,6 @@ var debanding_setting = BoolSetting.new("Debanding", "Graphics", "Debanding can 
 
 var dialog_key:KeySetting
 
-const _PATH = "res://addons/SEAL/Demo/global_settings.GSON"
 
 func _init():
 	add_setting(v_sync_setting)

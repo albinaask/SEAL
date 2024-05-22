@@ -11,6 +11,7 @@ func _input(event):
 func show_settings():
 	var settings_dialog_scene = preload(\"res://addons/SEAL/visualizers/SettingsDialog.tscn\")
 	var settings_dialog:ConfirmationDialog = settings_dialog_scene.instantiate()
+	settings_dialog.title = \"Global settings\"
 	add_child(settings_dialog)
 	
 	settings_dialog.get_node(\"SettingsPanel\").settings_collection = GlobalSettings

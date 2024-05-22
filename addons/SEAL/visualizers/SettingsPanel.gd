@@ -14,6 +14,9 @@ class_name SettingsPanel
 ##The collection that is being visualized by this panel. Must be set before the panel is made visible.
 @export var settings_collection:SettingsCollection
 
+##Margin between the contence of the painters.
+@export var margin: int = 10
+
 #shorthand values
 @onready var _setting_container = $SettingsPane/VBoxContainer
 @onready var _search_box = $titleBar/SearchBox
@@ -41,6 +44,7 @@ func _on_panel_visibility_changed():
 			if !_group_settings_dict.keys().has(group_name):
 				_add_group(group_name)
 			var settings_painter:SettingsPainter = setting.get_settings_painter_scene().instantiate()
+			settings_painter.settings_panel = self
 			_group_settings_dict[group_name].append(settings_painter)
 			
 			_setting_container.add_child(settings_painter)

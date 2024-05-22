@@ -11,9 +11,10 @@ config_version=5
 [application]
 
 config/name="SEAL"
-run/main_scene="res://tests/Settings testing.tscn"
+run/main_scene="res://addons/SEAL/Demo/Main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/image="res://images/SEAL Logo.png"
+config/icon="res://images/SEAL Logo.png"
 
 [autoload]
 
