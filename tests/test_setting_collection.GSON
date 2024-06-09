@@ -8,6 +8,15 @@
 "use_alpha": false,
 "value": Color(0, 0, 0, 1)
 },
+"Multi choice": {
+"allowed_values": Array[String](["one", "two", "three"]),
+"default_value": "one",
+"group": "group 2",
+"identifier": "Multi choice",
+"setting_type": "MultiChoiceSetting",
+"tooltip": "this is a multi choice setting",
+"value": "one"
+},
 "My string setting": {
 "default_value": "",
 "group": "String group",
@@ -67,8 +76,8 @@
 "default_value": 1,
 "group": "group 2",
 "identifier": "setting_2",
-"max_value": 10,
-"min_value": 0,
+"max_value": 10.0,
+"min_value": 0.0,
 "setting_type": "IntSetting",
 "tooltip": "my special int setting",
 "unit": "pcs",

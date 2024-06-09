@@ -14,12 +14,17 @@ func update_visuals():
 	_option_button.clear()
 	assert(setting is MultiChoiceSetting)
 	for option in setting.allowed_values:
-		_option_button.add_item(option)
-	_option_button.text = _proxy_value
+		_option_button.add_item(tr(option))
+	#We assume button idx align with index in setting.allowed_values, this should be the case since they are added in order.
+	if _proxy_value:
+		_option_button.select(setting.allowed_values.find(_proxy_value))
+	else:
+		_option_button.select(0)
 
 
 func _on_value_changed():
-	_proxy_value = _option_button.text
+	assert(_option_button.selected >= 0)
+	_proxy_value = setting.allowed_values[_option_button.selected]
 "
 
 [node name="MultiChoiceSettingsPainter" instance=ExtResource("1_10oe5")]

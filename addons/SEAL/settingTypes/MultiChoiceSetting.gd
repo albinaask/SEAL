@@ -9,7 +9,7 @@ var allowed_values:Array[String] = []
 
 static func _static_init() -> void:
 	create_locked_collection_from_GSON_methods[_TYPE] = func(raw_setting:Dictionary)->MultiChoiceSetting:
-		return MultiChoiceSetting.new(raw_setting["identifier"], raw_setting["group"], raw_setting["tooltip"], raw_setting["default_value"], raw_setting["allowed_values"], true)#lock the setting
+		return MultiChoiceSetting.new(raw_setting["identifier"], raw_setting["group"], raw_setting["tooltip"], raw_setting["default_value"], Array(raw_setting["allowed_values"], TYPE_STRING, &"", null), true)#lock the setting
 
 ##default value must be one of the allowed values, allowed values is an array of strings. For other values, see the Setting.gd constructor.
 func _init(identifier:String, group:String, tooltip:String, default_value:String, allowed_values:Array[String],  _locked:=false) -> void:

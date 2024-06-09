@@ -1,5 +1,7 @@
 extends ConfirmationDialog
 
+class_name MultiSettingsDialog
+
 var packed_settings_panel:PackedScene = load("res://addons/SEAL/visualizers/SettingsPanel.tscn")
 
 #Stores all the panels.
