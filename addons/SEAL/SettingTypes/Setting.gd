@@ -19,7 +19,13 @@ var _group:String
 
 ##Internal variable that is unsafe. You should probably use set_value() and get_value() methods instead.
 ##Do not use unless you know what you are doing and using proper protection.
-var _value
+var _value:
+	set(val):
+		if call("is_value_valid", val):
+			_value = val
+			on_setting_changed.emit()
+		else:
+			SEAL.logger.err("Value of setting with identifier '" + identifier + "' is not valid. Not setting")
 
 ##Settings have a type that must be unique. See any of the built in settings for examples.
 ##Note: New settings must be registred during the startup sequence before any deserialization is done.
