@@ -22,9 +22,9 @@ func update_visuals():
 		_option_button.select(0)
 
 
-func _on_value_changed():
+func _on_value_changed(idx:int):
 	assert(_option_button.selected >= 0)
-	_proxy_value = setting.allowed_values[_option_button.selected]
+	_proxy_value = setting.allowed_values[idx]
 "
 
 [node name="MultiChoiceSettingsPainter" instance=ExtResource("1_10oe5")]
@@ -34,4 +34,4 @@ script = SubResource("1")
 layout_mode = 2
 focus_mode = 1
 
-[connection signal="pressed" from="ValueGroup/OptionButton" to="." method="_on_value_changed"]
+[connection signal="item_selected" from="ValueGroup/OptionButton" to="." method="_on_value_changed"]
