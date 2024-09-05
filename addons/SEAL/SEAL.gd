@@ -1,3 +1,4 @@
+@tool
 extends Node
 
 ##Logger for all things SEAL. See https://github.com/albinaask/Log for reference

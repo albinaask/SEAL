@@ -4,6 +4,8 @@
 [ext_resource type="Script" path="res://addons/SEAL/visualizers/MultiSettingsDialog.gd" id="2"]
 
 [node name="MultiSettingsDialog" type="ConfirmationDialog"]
+title = "Settings"
+initial_position = 1
 theme = ExtResource("1_fxr03")
 script = ExtResource("2")
 

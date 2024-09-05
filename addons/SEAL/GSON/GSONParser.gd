@@ -1,3 +1,4 @@
+@tool
 extends RefCounted
 
 ##This Class implements a system for storing resources as a JSON derivate called GSON, 

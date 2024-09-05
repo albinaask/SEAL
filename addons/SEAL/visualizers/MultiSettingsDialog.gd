@@ -9,11 +9,12 @@ var _panels:Dictionary = {}
 
 ## Adds a collection to the dialog with the given name.
 func add_settings_collection(name:String, settings_collection:SettingsCollection):
-	var panel:SettingsPanel = packed_settings_panel.instantiate()
-	panel.name = tr(name)
-	panel.settings_collection = settings_collection
-	_panels[settings_collection] = panel
-	$TabContainer.add_child(panel)
+	if !settings_collection._settings.is_empty():
+		var panel:SettingsPanel = packed_settings_panel.instantiate()
+		panel.name = tr(name)
+		panel.settings_collection = settings_collection
+		_panels[settings_collection] = panel
+		$TabContainer.add_child(panel)
 
 ##Resyncs setting values of all the panels. Connected to the dialog's confirm button.
 func _on_confirmed() -> void:

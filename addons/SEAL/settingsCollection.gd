@@ -24,6 +24,11 @@ func get_setting(identifier:String)->Setting:
 	SEAL.logger.err_cond_false(_settings.has(identifier), "No setting found in this collection with identifier ", false, identifier)
 	return _settings[identifier]
 
+
+##Returns the amount of settings in this collection.
+func get_settings_count()->int:
+	return _settings.size()
+
 ##Stores all the settings in this collection into a dictionary that can be written to a file, shipped over the internet or whatever you like.
 func serialize()->Dictionary:
 	var dict = Dictionary()
