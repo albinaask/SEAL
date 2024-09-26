@@ -97,7 +97,7 @@ func _update_visuals():
 
 func _update_min_size():
 	var min_size_x = 0
-	for child in get_children():
+	for child in $SettingsPane/VBoxContainer.get_children():
 		if child is Control:
 			min_size_x = max(min_size_x, child.get_combined_minimum_size().x)
 	$SettingsPane/VBoxContainer.custom_minimum_size.x = min_size_x
