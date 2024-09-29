@@ -19,7 +19,7 @@ class_name SettingsPanel
 
 #shorthand values
 @onready var _setting_container = $SettingsPane/VBoxContainer
-@onready var _search_box = $titleBar/SearchBox
+@onready var _search_box = $SearchBar/SearchBox
 
 var _group_settings_dict := {}
 var _group_button_dict := {}
