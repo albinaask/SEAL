@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://cb6q84y2tkgs3"]
+
+[ext_resource type="Texture2D" uid="uid://dr06uhafck2br" path="res://addons/SEAL/visualizers/OpenSectionIcon.png" id="1_gcpg4"]
+[ext_resource type="Script" path="res://addons/SEAL/painters/GroupButtonPainter.gd" id="2_tne75"]
+
+[node name="GroupButtonPainter" type="Button"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+focus_mode = 1
+theme_override_constants/h_separation = 20
+icon = ExtResource("1_gcpg4")
+flat = true
+alignment = 0
+expand_icon = true
+script = ExtResource("2_tne75")
+
+[connection signal="property_list_changed" from="." to="." method="_onproperty_list_changed"]
+[connection signal="theme_changed" from="." to="." method="_ontheme_changed"]
