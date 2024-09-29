@@ -140,6 +140,8 @@ func _update_group_visuals(group_name):
 	group_button.visible = match_group_name || search_term == "" || (has_matching_setting if _search_box_display_groups else false)
 	if has_matching_setting && (group_button.icon == closed_section_icon || !all_matching):
 		group_button.icon = halfopen_section_icon
+    elif match_group_name && group_button.icon == closed_section_icon:
+		group_button.icon = halfopen_section_icon
 	else:
 		group_button.icon = closed_section_icon if group_button.was_last_state_closed else open_section_icon
 
