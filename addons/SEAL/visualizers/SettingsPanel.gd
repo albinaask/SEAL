@@ -21,7 +21,7 @@ const GROUP_BUTTON_PAINTER : PackedScene = preload("res://addons/SEAL/painters/G
 
 #shorthand values
 @onready var _setting_container = $SettingsPane/VBoxContainer
-@onready var _search_box = $titleBar/SearchBox
+@onready var _search_box = $SearchBar/SearchBox
 
 var _group_settings_dict := {}
 var _group_button_dict := {}
