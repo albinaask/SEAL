@@ -32,7 +32,9 @@ func _ready():
 
 ##Called on made visible.
 func _on_panel_visibility_changed():
-	assert(settings_collection)
+	if !settings_collection:
+        return
+
 	if is_inside_tree() && is_visible_in_tree():#fire only if made visible and in scene tree
 		for child in _setting_container.get_children():
 			_setting_container.remove_child(child)
