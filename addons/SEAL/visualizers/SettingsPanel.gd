@@ -32,10 +32,7 @@ func _ready():
 
 ##Called on made visible.
 func _on_panel_visibility_changed():
-	if !settings_collection:
-        return
-
-	if is_inside_tree() && is_visible_in_tree():#fire only if made visible and in scene tree
+	if settings_collection && is_inside_tree() && is_visible_in_tree():#fire only if made visible and in scene tree
 		for child in _setting_container.get_children():
 			_setting_container.remove_child(child)
 		_group_button_dict.clear()
@@ -53,6 +50,7 @@ func _on_panel_visibility_changed():
 			settings_painter._on_show(setting)
 		#initially sync the visuals.
 		_update_visuals()
+
 
 
 ##Internal method for adding a new group, adds a button that controls the visibility of the settings that are connected to this group.
