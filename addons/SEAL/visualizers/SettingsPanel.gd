@@ -80,7 +80,6 @@ func _on_group_button_pressed(button:Button):
 ##Internal method that visibility of the the list of settings, 
 ##done when changes are made to for example the search
 func _update_visuals():
-	_setting_container.size.x = size.x
 	var search_term = _search_box.text
 	var min_size_x = 0
 	for group_name in _group_settings_dict:
