@@ -115,27 +115,33 @@ func _change_group_visibility(button, vsible):
 			setting.visible = false##TODO: Add dependable settings... 
 
 func _update_group_visuals(group_name):	
-	var search_term = _search_box.text
+	var search_term = _search_box.text.replace(" ", "_")
 	if _search_box_ignore_case:
 		search_term = search_term.to_lower()
 	
-	var match_group_name = (group_name.to_lower().count(search_term) > 0) if _search_box_ignore_case else (group_name.count(search_term) > 0)
+	var group_name_standardized = group_name.replace(" ", "_")
+	
+	var match_group_name = (group_name_standardized.to_lower().count(search_term) > 0) if _search_box_ignore_case else (group_name_standardized.count(search_term) > 0)
 	var has_matching_setting = false
 	var all_matching = true
-	
 	var group_button = _group_button_dict[group_name]
+	
+	var gp = group_name.to_lower() 
+	
 	for settings_painter:SettingsPainter in _group_settings_dict[group_name]:
-		var match_setting_identifier = (settings_painter.setting.identifier.to_lower().count(search_term) > 0) if _search_box_ignore_case else (settings_painter.setting.identifier.count(search_term) > 0)
+		var id = settings_painter.setting.identifier.replace(" ", "_")
+		var match_setting_identifier = (id.to_lower().count(search_term) > 0) if _search_box_ignore_case else (id.count(search_term) > 0)
 		settings_painter.visible = (search_term == "" && !group_button.was_last_state_closed) || match_group_name || match_setting_identifier
 		if match_setting_identifier:
 			has_matching_setting = true
 		else:
 			all_matching = false
+			
 	
 	group_button.visible = match_group_name || search_term == "" || has_matching_setting
 	if has_matching_setting && (group_button.was_last_state_closed || !all_matching):
 		group_button.icon = halfopen_section_icon
-    elif match_group_name && group_button.was_last_state_closed:
+	elif match_group_name && group_button.was_last_state_closed:
 		group_button.icon = halfopen_section_icon
 	else:
 		group_button.icon = closed_section_icon if group_button.was_last_state_closed else open_section_icon
