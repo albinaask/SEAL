@@ -25,9 +25,6 @@ const GROUP_BUTTON_PAINTER : PackedScene = preload("res://addons/SEAL/painters/G
 ##Search box will ignore case of the inserted text.
 @export var _search_box_ignore_case : bool = true
 
-##Search box will display always groups of the found settings e.g. if searched "Show Hp Bar" is found under "Gameplay", it will also display "Gameplay" group above the setting. 
-@export var _search_box_display_groups : bool = false
-
 #shorthand values
 @onready var _setting_container = $SettingsPane/VBoxContainer
 @onready var _search_box = $SearchBar/SearchBox
@@ -135,7 +132,7 @@ func _update_group_visuals(group_name):
 		else:
 			all_matching = false
 	
-	group_button.visible = match_group_name || search_term == "" || (has_matching_setting if _search_box_display_groups else false)
+	group_button.visible = match_group_name || search_term == "" || has_matching_setting
 	if has_matching_setting && (group_button.was_last_state_closed || !all_matching):
 		group_button.icon = halfopen_section_icon
     elif match_group_name && group_button.was_last_state_closed:
