@@ -2,6 +2,8 @@ extends VBoxContainer
 
 class_name SettingsPanel
 
+const GROUP_BUTTON_PAINTER : PackedScene = preload("res://addons/SEAL/painters/GroupButtonPainter.tscn")
+
 ##Icon that will be shown when the group is not collapsed.
 @export var open_section_icon: Texture2D = preload("res://addons/SEAL/visualizers/OpenSectionIcon.png")
 
@@ -56,19 +58,15 @@ func _on_panel_visibility_changed():
 ##Internal method for adding a new group, adds a button that controls the visibility of the settings that are connected to this group.
 func _add_group(group_name:String):
 	_group_settings_dict[group_name] = []
-	var group_button = Button.new()
-	group_button.icon = open_section_icon
-	group_button.expand_icon = true
+	var group_button = GROUP_BUTTON_PAINTER.instantiate()
 	group_button.text = group_name
-	group_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	group_button.focus_mode = Control.FOCUS_CLICK
-	group_button.flat = true
-	group_button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	group_button.name = "group_" + group_name
 	group_button.connect("pressed",Callable(self,"_on_group_button_pressed").bind(group_button))
 	_setting_container.add_child(group_button)
 	_group_button_dict[group_name] = group_button
 
+	#Theme seems to be set after being added as a child, if it is inherited. But I call it as deferred to calm my paranoia
+	group_button.call_deferred("calc_min_size")
 
 ##Internal method for controlling the collapsing of the sections.
 func _on_group_button_pressed(button:Button):

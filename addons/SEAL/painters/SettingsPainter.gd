@@ -71,7 +71,7 @@ func _get_minimum_size() -> Vector2:
 
 #Set correct positions of children.
 func _sort_children():
-	assert(settings_panel, "Settings panel not set, must be set befoere added to tree.")
+	assert(settings_panel, "Settings panel not set, must be set before added to tree.")
 	if _title_label && _value_group && _reset_button:
 		var margin = settings_panel.margin
 
