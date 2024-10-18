@@ -58,6 +58,7 @@ mouse_filter = 1
 theme_override_styles/separator = SubResource("StyleBoxEmpty_1fn7j")
 
 [node name="SettingsPane" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0

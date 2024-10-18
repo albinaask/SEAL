@@ -53,7 +53,9 @@ func on_debanding_updated():
 func on_window_mode_updated():
 	var mode:String = window_mode_setting.get_value()
 	var window := get_window()
-	if mode == "Fullscreen":
+	if !window:
+		return
+	elif mode == "Fullscreen":
 		window.borderless = true
 		window.mode = Window.MODE_FULLSCREEN
 		Input.mouse_mode = Input.MOUSE_MODE_CONFINED
