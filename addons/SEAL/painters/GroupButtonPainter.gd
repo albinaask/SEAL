@@ -3,6 +3,8 @@ extends Button
 ##Forces a minimal size to fit the text, icon and separation between those
 @export var set_minimum_size : bool = true 
 
+@onready var was_last_state_closed = false
+
 ##Calculates minimal size to fit the text, icon and separation between those
 func calc_min_size() -> void:
 	if !self.set_minimum_size:
