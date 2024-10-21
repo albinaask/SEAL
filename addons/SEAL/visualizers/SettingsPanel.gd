@@ -7,6 +7,9 @@ const GROUP_BUTTON_PAINTER : PackedScene = preload("res://addons/SEAL/painters/G
 ##Icon that will be shown when the group is not collapsed.
 @export var open_section_icon: Texture2D = preload("res://addons/SEAL/visualizers/OpenSectionIcon.png")
 
+##Icon that will be shown when the group is partially collapsed due to search or open only because it is searched.
+@export var halfopen_section_icon: Texture2D = preload("res://addons/SEAL/visualizers/PartiallyOpenSectionIcon.png")
+
 ##Icon that will be shown when the group is collapsed.
 @export var closed_section_icon: Texture2D = preload("res://addons/SEAL/visualizers/ClosedSectionIcon.png")
 
@@ -19,9 +22,12 @@ const GROUP_BUTTON_PAINTER : PackedScene = preload("res://addons/SEAL/painters/G
 ##Margin between the contence of the painters.
 @export var margin: int = 10
 
+##Search box will ignore case of the inserted text.
+@export var _search_box_ignore_case : bool = true
+
 #shorthand values
 @onready var _setting_container = $SettingsPane/VBoxContainer
-@onready var _search_box = $titleBar/SearchBox
+@onready var _search_box = $SearchBar/SearchBox
 
 var _group_settings_dict := {}
 var _group_button_dict := {}
@@ -70,24 +76,81 @@ func _add_group(group_name:String):
 
 ##Internal method for controlling the collapsing of the sections.
 func _on_group_button_pressed(button:Button):
-	button.icon = closed_section_icon if button.icon == open_section_icon else open_section_icon
+	var search_term = _search_box.text
+	if _search_box_ignore_case:
+		search_term = search_term.to_lower()
 	
-	for setting in _group_settings_dict[button.text]:
-		setting.visible = button.icon == open_section_icon##TODO: Add dependable settings... 
+	var match_not_all_settings = false
+	var match_all = true
+
+	for settings_painter:SettingsPainter in _group_settings_dict[button.text]:
+		if (settings_painter.setting.identifier.to_lower().count(search_term) > 0) if _search_box_ignore_case else (settings_painter.setting.identifier.count(search_term) > 0):
+			match_not_all_settings = true
+		else:
+			match_all = false
+	
+	match_not_all_settings = match_not_all_settings && !match_all
+		
+	match button.icon:
+		open_section_icon:
+			_change_group_visibility(button, false)
+		halfopen_section_icon:
+			_change_group_visibility(button, true)
+		closed_section_icon:
+			if match_not_all_settings:
+				_update_group_visuals(button.text)
+			else:
+				_change_group_visibility(button, true)
+
+func _change_group_visibility(button, vsible):
+	if vsible:
+		button.icon = open_section_icon
+		button.was_last_state_closed = false
+		for setting in _group_settings_dict[button.text]:
+			setting.visible = true##TODO: Add dependable settings... 
+	else:
+		button.icon = closed_section_icon
+		button.was_last_state_closed = true
+		for setting in _group_settings_dict[button.text]:
+			setting.visible = false##TODO: Add dependable settings... 
+
+func _update_group_visuals(group_name):	
+	var search_term = _search_box.text.replace(" ", "_")
+	if _search_box_ignore_case:
+		search_term = search_term.to_lower()
+	
+	##TODO: Why convert every space to underscore?
+	var group_name_standardized = tr(group_name).replace(" ", "_")
+	print(group_name_standardized)
+	var match_group_name = (group_name_standardized.to_lower().count(search_term) > 0) if _search_box_ignore_case else (group_name_standardized.count(search_term) > 0)
+	var has_matching_setting = false
+	var all_matching = true
+	var group_button = _group_button_dict[group_name]
+	
+	for settings_painter:SettingsPainter in _group_settings_dict[group_name]:
+		var id = tr(settings_painter.setting.identifier.replace(" ", "_"))
+		var match_setting_identifier = (id.to_lower().count(search_term) > 0) if _search_box_ignore_case else (id.count(search_term) > 0)
+		settings_painter.visible = (search_term == "" && !group_button.was_last_state_closed) || match_group_name || match_setting_identifier
+		if match_setting_identifier:
+			has_matching_setting = true
+		else:
+			all_matching = false
+	
+	#Group button visibility logic
+	group_button.visible = match_group_name || search_term == "" || has_matching_setting
+	if has_matching_setting && (group_button.was_last_state_closed || !all_matching):
+		group_button.icon = halfopen_section_icon
+	elif match_group_name && group_button.was_last_state_closed:
+		group_button.icon = halfopen_section_icon
+	else:
+		group_button.icon = closed_section_icon if group_button.was_last_state_closed else open_section_icon
 
 ##Internal method that visibility of the the list of settings, 
 ##done when changes are made to for example the search
 func _update_visuals():
-	var search_term = _search_box.text
-	var min_size_x = 0
+	_setting_container.size.x = size.x
 	for group_name in _group_settings_dict:
-		var match_group_name = group_name.count(search_term)>0
-		var has_matching_setting = false
-		for settings_painter:SettingsPainter in _group_settings_dict[group_name]:
-			settings_painter.visible = search_term == "" || match_group_name || settings_painter.setting.identifier.count(search_term)>0
-			has_matching_setting = true
-			min_size_x = max(min_size_x, settings_painter.get_combined_minimum_size().x)
-		_group_button_dict[group_name].visible = match_group_name || search_term == ""
+		_update_group_visuals(group_name)
 	if is_inside_tree():
 		_update_min_size.call_deferred()
 

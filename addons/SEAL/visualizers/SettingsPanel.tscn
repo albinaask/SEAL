@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://bmftyc5y0aned"]
+[gd_scene load_steps=5 format=3 uid="uid://bmftyc5y0aned"]
 
 [ext_resource type="Script" path="res://addons/SEAL/visualizers/SettingsPanel.gd" id="1_4t6q3"]
 [ext_resource type="Texture2D" uid="uid://c7yc3b3whn0ao" path="res://addons/SEAL/visualizers/SearchIcon.png" id="2_fi3us"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3eic4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1fn7j"]
 
 [node name="SettingsPanel" type="VBoxContainer"]
 anchors_preset = 15
@@ -12,18 +16,46 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 script = ExtResource("1_4t6q3")
 
-[node name="titleBar" type="HBoxContainer" parent="."]
+[node name="SettingsMarginTop" type="HSeparator" parent="."]
 layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.01
+theme_override_styles/separator = SubResource("StyleBoxEmpty_3eic4")
+
+[node name="SearchBar" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
 alignment = 2
 
-[node name="TextureRect" type="TextureRect" parent="titleBar"]
+[node name="SearchBarMarginLeft" type="VSeparator" parent="SearchBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxEmpty_1fn7j")
+
+[node name="TextureRect" type="TextureRect" parent="SearchBar"]
 layout_mode = 2
 texture = ExtResource("2_fi3us")
 expand_mode = 3
 
-[node name="SearchBox" type="LineEdit" parent="titleBar"]
+[node name="SearchBox" type="LineEdit" parent="SearchBar"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
+size_flags_horizontal = 3
 placeholder_text = "search"
+context_menu_enabled = false
+clear_button_enabled = true
+drag_and_drop_selection_enabled = false
+caret_blink = true
+caret_blink_interval = 0.6
+
+[node name="SearchBarMarginRight" type="VSeparator" parent="SearchBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.01
+mouse_filter = 1
+theme_override_styles/separator = SubResource("StyleBoxEmpty_1fn7j")
 
 [node name="SettingsPane" type="ScrollContainer" parent="."]
 custom_minimum_size = Vector2(0, 100)
@@ -37,4 +69,4 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [connection signal="visibility_changed" from="." to="." method="_on_panel_visibility_changed"]
-[connection signal="text_changed" from="titleBar/SearchBox" to="." method="_on_search_changed"]
+[connection signal="text_changed" from="SearchBar/SearchBox" to="." method="_on_search_changed"]
