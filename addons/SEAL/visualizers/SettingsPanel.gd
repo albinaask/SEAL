@@ -149,8 +149,7 @@ func _update_group_visuals(group_name):
 ##Internal method that visibility of the the list of settings, 
 ##done when changes are made to for example the search
 func _update_visuals():
-	var search_term = _search_box.text
-	var min_size_x = 0
+	_setting_container.size.x = size.x
 	for group_name in _group_settings_dict:
 		_update_group_visuals(group_name)
 	if is_inside_tree():
