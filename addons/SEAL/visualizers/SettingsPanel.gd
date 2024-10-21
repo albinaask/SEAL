@@ -41,24 +41,27 @@ func _ready():
 ##Called on made visible.
 func _on_panel_visibility_changed():
 	if settings_collection && is_inside_tree() && is_visible_in_tree():#fire only if made visible and in scene tree
-		for child in _setting_container.get_children():
-			_setting_container.remove_child(child)
+		_setting_container.get_children().clear()
 		_group_button_dict.clear()
 		_group_settings_dict.clear()
 		var settings_dict = settings_collection._settings
-		for setting:Setting in settings_dict.values():
-			var group_name:String = setting._group
+		var settings_dict_values : Array = settings_dict.values()
+		var settings_dict_size = settings_dict.size()
+		for i in settings_dict_size: #This loop searches for new Groups
+			var group_name : String = settings_dict_values[i]._group
 			if !_group_settings_dict.keys().has(group_name):
 				_add_group(group_name)
-			var settings_painter:SettingsPainter = setting.get_settings_painter_scene().instantiate()
-			settings_painter.settings_panel = self
-			_group_settings_dict[group_name].append(settings_painter)
+				for j in range(i, settings_dict_size): #This one adds Settings that are from that Group
+					var setting : Setting = settings_dict_values[j]
+					if setting._group == group_name:
+						var settings_painter:SettingsPainter = setting.get_settings_painter_scene().instantiate()
+						settings_painter.settings_panel = self
+						_group_settings_dict[group_name].append(settings_painter)
 			
-			_setting_container.add_child(settings_painter)
-			settings_painter._on_show(setting)
+						_setting_container.add_child(settings_painter)
+						settings_painter._on_show(setting)
 		#initially sync the visuals.
 		_update_visuals()
-
 
 
 ##Internal method for adding a new group, adds a button that controls the visibility of the settings that are connected to this group.
